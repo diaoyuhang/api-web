@@ -42,7 +42,9 @@ export default function downloadUrlPlugin(toolbox) {
             return
           }
           specActions.updateLoadingStatus("success")
-          specActions.updateSpec(res.text)
+          // specActions.updateSpec(res.text)
+          const json = '{"openapi":"3.0.1","info":{},"servers":[],"tags":[{"name":"api元数据接口","description":"38bfea5c-310f-4068-86e9-5182bd855994"}],"paths":{"/api/pathInfo/{tagId}":{"get":{"tags":["api元数据接口"]}}},"components":{}}'
+          specActions.updateSpec(json)
           if (specSelectors.url() !== url) {
             specActions.updateUrl(url)
           }
