@@ -4,7 +4,7 @@ window.onload = function() {
   window["SwaggerUIStandalonePreset"] = window["swagger-ui-standalone-preset"]
   // Build a system
   const ui = SwaggerUIBundle({
-    url: "https://petstore.swagger.io/v2/swagger.json",
+    url: "",
     dom_id: "#swagger-ui",
     presets: [
       SwaggerUIBundle.presets.apis,
@@ -19,7 +19,7 @@ window.onload = function() {
 
   window.ui = ui
 
-  ui.initOAuth({
+/*  ui.initOAuth({
     clientId: "your-client-id",
     clientSecret: "your-client-secret-if-required",
     realm: "your-realms",
@@ -29,5 +29,5 @@ window.onload = function() {
     additionalQueryStringParams: {},
     useBasicAuthenticationWithAccessCodeGrant: false,
     usePkceWithAuthorizationCodeGrant: false
-  })
+  })*/
 }

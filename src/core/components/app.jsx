@@ -1,12 +1,18 @@
 /**
  * @prettier
  */
-import React from "react"
-import PropTypes from "prop-types"
+import React, { useEffect } from "react"
+import { useParams } from "react-router-dom"
 
-class App extends React.Component {
-  getLayout() {
-    const { getComponent, layoutSelectors } = this.props
+function App(props) {
+  const { getComponent, layoutSelectors, specActions, specSelectors } = props
+  const params = useParams()
+
+  useEffect(() => {
+    specActions.download("https://petstore.swagger.io/v2/swagger.json")
+  }, [])
+
+  const getLayout = () => {
     const layoutName = layoutSelectors.current()
     const Component = getComponent(layoutName, true)
 
@@ -15,16 +21,8 @@ class App extends React.Component {
       : () => <h1> No layout defined for &quot;{layoutName}&quot; </h1>
   }
 
-  render() {
-    const Layout = this.getLayout()
-
-    return <Layout />
-  }
-}
-
-App.propTypes = {
-  getComponent: PropTypes.func.isRequired,
-  layoutSelectors: PropTypes.object.isRequired,
+  const Layout = getLayout()
+  return <Layout />
 }
 
 export default App

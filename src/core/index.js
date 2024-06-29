@@ -31,6 +31,9 @@ import DownloadUrlPlugin from "./plugins/download-url"
 import SyntaxHighlightingPlugin from "core/plugins/syntax-highlighting"
 import VersionsPlugin from "core/plugins/versions"
 import SafeRenderPlugin from "./plugins/safe-render"
+import ReactDOM from "react-dom"
+import React from "react"
+import createRouter from "./router"
 
 import {
   defaultOptions,
@@ -43,6 +46,7 @@ import {
   typeCastOptions,
   typeCastMappings,
 } from "./config"
+import { createBrowserRouter, createHashRouter, RouterProvider } from "react-router-dom"
 
 function SwaggerUI(userOptions) {
   const queryOptions = optionsFromQuery()(userOptions)
@@ -85,10 +89,10 @@ function SwaggerUI(userOptions) {
   }
   const render = (options) => {
     if (options.domNode) {
-      system.render(options.domNode, "App")
+    return system.render(options.domNode, "App")
     } else if (options.dom_id) {
       const domNode = document.querySelector(options.dom_id)
-      system.render(domNode, "App")
+      return system.render(domNode, "App")
     } else if (options.dom_id === null || options.domNode === null) {
       /**
        * noop
@@ -105,7 +109,18 @@ function SwaggerUI(userOptions) {
   if (!mergedOptions.configUrl) {
     persistConfigs(mergedOptions)
     updateSpec(mergedOptions)
-    render(mergedOptions)
+
+    const App = render(mergedOptions)
+    const root = ReactDOM.createRoot(document.getElementById('swagger-ui'))
+    const router = createRouter({
+      path:"/app/:project/:showFlag/",
+      element:<App/>
+    })
+
+    root.render(
+      <RouterProvider router={router}>
+      </RouterProvider>
+    )
 
     return system
   }

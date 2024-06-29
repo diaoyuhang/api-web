@@ -5,10 +5,11 @@ import { getExtensions, sanitizeUrl, escapeDeepLinkPath } from "core/utils"
 import { safeBuildUrl } from "core/utils/url"
 import { Iterable, List } from "immutable"
 import ImPropTypes from "react-immutable-proptypes"
+import withRouterParams from "../utils/withRouterParams"
 
 import RollingLoadSVG from "core/assets/rolling-load.svg"
 
-export default class Operation extends PureComponent {
+ class Operation extends PureComponent {
   static propTypes = {
     specPath: ImPropTypes.list.isRequired,
     operation: PropTypes.instanceOf(Iterable).isRequired,
@@ -61,7 +62,8 @@ export default class Operation extends PureComponent {
       authActions,
       authSelectors,
       oas3Actions,
-      oas3Selectors
+      oas3Selectors,
+      routerParams
     } = this.props
     let operationProps = this.props.operation
 
@@ -120,7 +122,7 @@ export default class Operation extends PureComponent {
     return (
         <div className={deprecated ? "opblock opblock-deprecated" : isShown ? `opblock opblock-${method} is-open` : `opblock opblock-${method}`} id={escapeDeepLinkPath(isShownKey.join("-"))} >
           <OperationSummary operationProps={operationProps} isShown={isShown} toggleShown={toggleShown} getComponent={getComponent} authActions={authActions} authSelectors={authSelectors} specPath={specPath} />
-          <Collapse isOpened={isShown}>
+          <Collapse isOpened={routerParams.showFlag === "true"}>
             <div className="opblock-body">
               { (operation && operation.size) || operation === null ? null :
                 <RollingLoadSVG height="32px" width="32px" className="opblock-loading-animation" />
@@ -258,3 +260,5 @@ export default class Operation extends PureComponent {
   }
 
 }
+
+export default withRouterParams(Operation);

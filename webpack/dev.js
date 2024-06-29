@@ -65,6 +65,7 @@ const devConfig = configBuilder(
         logging: "info",
         progress: true,
       },
+      historyApiFallback: true
     },
 
     module: {

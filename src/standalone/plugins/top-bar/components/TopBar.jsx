@@ -161,9 +161,9 @@ class TopBar extends React.Component {
             <Link>
               <Logo/>
             </Link>
-            <form className="download-url-wrapper" onSubmit={formOnSubmit}>
+            {/*<form className="download-url-wrapper" onSubmit={formOnSubmit}>
               {control.map((el, i) => cloneElement(el, { key: i }))}
-            </form>
+            </form>*/}
           </div>
         </div>
       </div>
