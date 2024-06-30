@@ -113,7 +113,7 @@ function SwaggerUI(userOptions) {
     const App = render(mergedOptions)
     const root = ReactDOM.createRoot(document.getElementById('swagger-ui'))
     const router = createRouter({
-      path:"/api",
+      path:"api",
       element:<App/>
     })
 
