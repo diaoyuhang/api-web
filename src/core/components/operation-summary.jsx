@@ -106,7 +106,7 @@ class OperationSummary extends PureComponent {
           aria-expanded={isShown}
           tabIndex="-1"
           onClick={toggleShown}>
-          {routerParams.showFlag ==="true" ? <ArrowUpIcon className="arrow" /> : <ArrowDownIcon className="arrow" />}
+          {routerParams.apiId ? <ArrowUpIcon className="arrow" /> : <ArrowDownIcon className="arrow" />}
         </button>
       </div>
     )

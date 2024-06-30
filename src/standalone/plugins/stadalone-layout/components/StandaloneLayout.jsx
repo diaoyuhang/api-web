@@ -26,11 +26,7 @@ class StandaloneLayout extends React.Component {
       <Container className='swagger-ui'>
         {Topbar ? <Topbar /> : null}
         <BaseLayout />
-        <Row>
-          <Col>
-            <OnlineValidatorBadge />
-          </Col>
-        </Row>
+
       </Container>
     )
   }

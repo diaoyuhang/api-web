@@ -115,7 +115,9 @@ class OperationContainer extends PureComponent {
   }*/
 
   toggleShown =(url) => {
-    window.open(url, '_blank');
+    if (this.props.routerParams.projectId) {
+      window.open(url, "_blank")
+    }
   }
   onCancelClick=() => {
     this.setState({tryItOutEnabled: !this.state.tryItOutEnabled})
@@ -200,7 +202,7 @@ class OperationContainer extends PureComponent {
 
     const Operation = getComponent( "operation" )
 
-    if (routerParams.showFlag ==="true"){
+    if (routerParams.apiId){
       this.requestResolvedSubtree();
     }
     const resolvedSubtree = this.getResolvedSubtree() || Map()
