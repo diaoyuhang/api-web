@@ -3,9 +3,10 @@ import PropTypes from "prop-types"
 import { Iterable, List } from "immutable"
 import ImPropTypes from "react-immutable-proptypes"
 import toString from "lodash/toString"
+import withRouterParams from "../utils/withRouterParams"
 
 
-export default class OperationSummary extends PureComponent {
+class OperationSummary extends PureComponent {
 
   static propTypes = {
     specPath: ImPropTypes.list.isRequired,
@@ -34,6 +35,7 @@ export default class OperationSummary extends PureComponent {
       authSelectors,
       operationProps,
       specPath,
+      routerParams
     } = this.props
 
     let {
@@ -65,6 +67,7 @@ export default class OperationSummary extends PureComponent {
     const hasSecurity = security && !!security.count()
     const securityIsOptional = hasSecurity && security.size === 1 && security.first().isEmpty()
     const allowAnonymous = !hasSecurity || securityIsOptional
+
     return (
       <div className={`opblock-summary opblock-summary-${method}`} >
         <button
@@ -103,9 +106,10 @@ export default class OperationSummary extends PureComponent {
           aria-expanded={isShown}
           tabIndex="-1"
           onClick={toggleShown}>
-          {isShown ? <ArrowUpIcon className="arrow" /> : <ArrowDownIcon className="arrow" />}
+          {routerParams.showFlag ==="true" ? <ArrowUpIcon className="arrow" /> : <ArrowDownIcon className="arrow" />}
         </button>
       </div>
     )
   }
 }
+export default withRouterParams(OperationSummary);

@@ -3,8 +3,9 @@ import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import { opId } from "swagger-client/es/helpers"
 import { Iterable, fromJS, Map } from "immutable"
+import withRouterParams from "../utils/withRouterParams"
 
-export default class OperationContainer extends PureComponent {
+class OperationContainer extends PureComponent {
   constructor(props, context) {
     super(props, context)
 
@@ -103,7 +104,7 @@ export default class OperationContainer extends PureComponent {
     }
   }
 
-  toggleShown =() => {
+/*  toggleShown =() => {
     let { layoutActions, tag, operationId, isShown } = this.props
     const resolvedSubtree = this.getResolvedSubtree()
     if(!isShown && resolvedSubtree === undefined) {
@@ -111,8 +112,11 @@ export default class OperationContainer extends PureComponent {
       this.requestResolvedSubtree()
     }
     layoutActions.show(["operations", tag, operationId], !isShown)
-  }
+  }*/
 
+  toggleShown =(url) => {
+    window.open(url, '_blank');
+  }
   onCancelClick=() => {
     this.setState({tryItOutEnabled: !this.state.tryItOutEnabled})
   }
@@ -190,11 +194,15 @@ export default class OperationContainer extends PureComponent {
       authSelectors,
       oas3Actions,
       oas3Selectors,
-      fn
+      fn,
+      routerParams
     } = this.props
 
     const Operation = getComponent( "operation" )
 
+    if (routerParams.showFlag ==="true"){
+      this.requestResolvedSubtree();
+    }
     const resolvedSubtree = this.getResolvedSubtree() || Map()
 
     const operationProps = fromJS({
@@ -206,7 +214,7 @@ export default class OperationContainer extends PureComponent {
       method,
       security,
       isAuthorized,
-      operationId,
+      operationId:unresolvedOp.getIn(["operation", "operationId"]),
       originalOperationId: resolvedSubtree.getIn(["operation", "__originalOperationId"]),
       showSummary,
       isShown,
@@ -248,5 +256,5 @@ export default class OperationContainer extends PureComponent {
       />
     )
   }
-
 }
+export default withRouterParams(OperationContainer);

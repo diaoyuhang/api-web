@@ -43,7 +43,7 @@ export default function downloadUrlPlugin(toolbox) {
           }
           specActions.updateLoadingStatus("success")
           // specActions.updateSpec(res.text)
-          const json = '{"openapi":"3.0.1","info":{},"servers":[],"tags":[{"name":"api元数据接口","description":"38bfea5c-310f-4068-86e9-5182bd855994"}],"paths":{"/api/pathInfo/{tagId}":{"get":{"tags":["api元数据接口"]}}},"components":{}}'
+          const json = '{"openapi":"3.0.1","info":{"title":"项目名","version":"master"},"servers":[],"tags":[{"name":"test","description":"abababab"}],"paths":{"/test/uploadFile":{"get":{"tags":["test"],"operationId":"qwqwwqwq","summary":"测试接口1","parameters":[{"name":"file","in":"query","required":true,"schema":{"type":"string","format":"binary"}}],"requestBody":{"content":{"application/json":{}}},"responses":{"200":{"content":{"*/*":{"schema":{"type":"string"}}}}}}}},"components":{}}';
           specActions.updateSpec(json)
           if (specSelectors.url() !== url) {
             specActions.updateUrl(url)

@@ -121,8 +121,8 @@ import RollingLoadSVG from "core/assets/rolling-load.svg"
 
     return (
         <div className={deprecated ? "opblock opblock-deprecated" : isShown ? `opblock opblock-${method} is-open` : `opblock opblock-${method}`} id={escapeDeepLinkPath(isShownKey.join("-"))} >
-          <OperationSummary operationProps={operationProps} isShown={isShown} toggleShown={toggleShown} getComponent={getComponent} authActions={authActions} authSelectors={authSelectors} specPath={specPath} />
-          <Collapse isOpened={routerParams.showFlag === "true"}>
+          <OperationSummary operationProps={operationProps} isShown={isShown} toggleShown={()=>toggleShown(`/app/${operationId}/true`)} getComponent={getComponent} authActions={authActions} authSelectors={authSelectors} specPath={specPath} />
+          <Collapse isOpened={routerParams.showFlag ==="true"}>
             <div className="opblock-body">
               { (operation && operation.size) || operation === null ? null :
                 <RollingLoadSVG height="32px" width="32px" className="opblock-loading-animation" />
