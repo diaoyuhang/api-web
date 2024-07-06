@@ -65,7 +65,12 @@ const devConfig = configBuilder(
         logging: "info",
         progress: true,
       },
-      historyApiFallback: true
+      historyApiFallback: true,
+      proxy: [{
+        context:["/user"],
+        target: 'http://localhost:8080', // 将请求代理到的目标服务器
+        changeOrigin: true, // 允许改变原始主机头为目标URL
+      }],
     },
 
     module: {

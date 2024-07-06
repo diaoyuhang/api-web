@@ -46,7 +46,9 @@ import {
   typeCastOptions,
   typeCastMappings,
 } from "./config"
-import { createBrowserRouter, createHashRouter, RouterProvider } from "react-router-dom"
+import { RouterProvider } from "react-router-dom"
+import { Provider } from "react-redux"
+import store from "./store"
 
 function SwaggerUI(userOptions) {
   const queryOptions = optionsFromQuery()(userOptions)
@@ -118,8 +120,10 @@ function SwaggerUI(userOptions) {
     })
 
     root.render(
-      <RouterProvider router={router}>
-      </RouterProvider>
+      <Provider store={store}>
+        <RouterProvider router={router}>
+        </RouterProvider>
+      </Provider>
     )
 
     return system

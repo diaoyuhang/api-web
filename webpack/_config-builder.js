@@ -126,6 +126,7 @@ function buildConfig(
         fallback: {
           fs: false,
           stream: require.resolve("stream-browserify"),
+          'process/browser': require.resolve('process/browser')
         },
       },
 
