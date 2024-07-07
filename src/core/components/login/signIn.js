@@ -17,19 +17,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { request } from "../../utils/request"
 import { Alert, Snackbar } from "@mui/material"
 import { setToken } from "../../store/modules/userStore"
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  )
-}
 export default function SignIn() {
 
   const [fieldValues,setFieldValues] = useState({
@@ -40,6 +27,9 @@ export default function SignIn() {
     email: '',
     password: '',
   });
+  const [alertSeverity,setAlertSeverity] = useState('info');
+  const [submitButtonStatus,setSubmitButtonStatus] = useState(false);
+
 
   const [open,setOpen] = useState(false);
   const [snackbarState,setSnackbarState] = useState({
@@ -54,6 +44,12 @@ export default function SignIn() {
   const msgHandleClose = ()=>{
     setOpen(false);
     setLoginErrorMsg('');
+    setAlertSeverity('info');
+  }
+  const msgHandleOpen = (msg,severity)=>{
+    setOpen(true);
+    setLoginErrorMsg(msg);
+    setAlertSeverity(severity);
   }
 
   const handleChange = (event) => {
@@ -83,6 +79,7 @@ export default function SignIn() {
   };
 
   const handleSubmit = (event) => {
+    setSubmitButtonStatus(true);
     event.preventDefault();
 
     for (let key of Object.keys(errors)) {
@@ -91,18 +88,20 @@ export default function SignIn() {
       }
     }
 
-    request.post("/user/login", fieldValues)
-      .then(res => {
-        if (200 === res.code) {
-          dispatch(setToken('这是用户token'));
-        }else{
-          setOpen(true);
-          setLoginErrorMsg(res.msg);
-        }
-      })
+    try {
+      request.post("/user/login", fieldValues)
+        .then(res => {
+          if (200 === res.code) {
+            dispatch(setToken(res.data.authentication));
+          } else {
+            setOpen(true)
+            setLoginErrorMsg(res.msg)
+          }
+        })
+    }finally {
+      setSubmitButtonStatus(false);
+    }
   }
-  const {token} = useSelector(state => state.user);
-  console.log("token:"+token);
 
   return (
       <Container component="main" maxWidth="xs" >
@@ -152,22 +151,19 @@ export default function SignIn() {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="记住我"
-            />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={submitButtonStatus}
             >
               登 录
             </Button>
 
-            <Snackbar open={open} autoHideDuration={6000} onClose={msgHandleClose}
+            <Snackbar open={open} autoHideDuration={3500} onClose={msgHandleClose}
                       anchorOrigin={{ vertical , horizontal }}>
-              <Alert onClose={msgHandleClose} severity="error" sx={{ width: '100%' }}>
+              <Alert variant="outlined" onClose={msgHandleClose} severity={alertSeverity} sx={{ width: '100%' }}>
                 {loginErrorMsg}
               </Alert>
             </Snackbar>
@@ -179,14 +175,13 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/web/signUp" variant="body2">
                   注册
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
   )
 }
