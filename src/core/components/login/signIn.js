@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import Avatar from "@mui/material/Avatar"
 import Button from "@mui/material/Button"
 import CssBaseline from "@mui/material/CssBaseline"
@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { request } from "../../utils/request"
 import { Alert, Snackbar } from "@mui/material"
 import { setToken } from "../../store/modules/userStore"
+import { useNavigate } from "react-router-dom"
 export default function SignIn() {
 
   const [fieldValues,setFieldValues] = useState({
@@ -78,8 +79,8 @@ export default function SignIn() {
     }
   };
 
+  const navigate = useNavigate()
   const handleSubmit = (event) => {
-    setSubmitButtonStatus(true);
     event.preventDefault();
 
     for (let key of Object.keys(errors)) {
@@ -87,12 +88,14 @@ export default function SignIn() {
         return;
       }
     }
+    setSubmitButtonStatus(true);
 
     try {
-      request.post("/user/login", fieldValues)
+      request.post("/user/loginssss", fieldValues)
         .then(res => {
           if (200 === res.code) {
             dispatch(setToken(res.data.authentication));
+            navigate("/web/other");
           } else {
             setOpen(true)
             setLoginErrorMsg(res.msg)

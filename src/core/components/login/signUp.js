@@ -90,7 +90,6 @@ export default function SignUp() {
   };
 
   const handleSubmit = (event) => {
-    setSubmitButtonStatus(true)
     event.preventDefault();
 
     for (let key of Object.keys(errors)) {
@@ -98,7 +97,7 @@ export default function SignUp() {
         return;
       }
     }
-
+    setSubmitButtonStatus(true);
     request.post("/user/register", fieldValues)
       .then(res => {
         if (200 === res.code) {

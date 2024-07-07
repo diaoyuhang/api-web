@@ -49,6 +49,7 @@ import {
 import { RouterProvider } from "react-router-dom"
 import { Provider } from "react-redux"
 import store from "./store"
+import AuthRoute from "./utils/AuthRoute"
 
 function SwaggerUI(userOptions) {
   const queryOptions = optionsFromQuery()(userOptions)
@@ -116,6 +117,9 @@ function SwaggerUI(userOptions) {
     const root = ReactDOM.createRoot(document.getElementById('swagger-ui'))
     const router = createRouter({
       path:"api",
+      element:<AuthRoute><App/></AuthRoute>
+    },{
+      path:"shareApi",
       element:<App/>
     })
 
