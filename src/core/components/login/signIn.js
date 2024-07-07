@@ -1,23 +1,21 @@
-import React from "react"
+import React, { useState } from "react"
 import Avatar from "@mui/material/Avatar"
 import Button from "@mui/material/Button"
 import CssBaseline from "@mui/material/CssBaseline"
 import TextField from "@mui/material/TextField"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import Checkbox from "@mui/material/Checkbox"
 import Link from "@mui/material/Link"
 import Grid from "@mui/material/Grid"
 import Box from "@mui/material/Box"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
-import { useState } from "react"
 import validator from "validator/es"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { request } from "../../utils/request"
-import { Alert, Snackbar } from "@mui/material"
 import { setToken } from "../../store/modules/userStore"
 import { useNavigate } from "react-router-dom"
+import { errorNotice } from "../../utils/message"
+
 export default function SignIn() {
 
   const [fieldValues,setFieldValues] = useState({
@@ -28,30 +26,10 @@ export default function SignIn() {
     email: '',
     password: '',
   });
-  const [alertSeverity,setAlertSeverity] = useState('info');
   const [submitButtonStatus,setSubmitButtonStatus] = useState(false);
 
 
-  const [open,setOpen] = useState(false);
-  const [snackbarState,setSnackbarState] = useState({
-    vertical:'top',
-    horizontal:'center'
-  });
-  const [loginErrorMsg,setLoginErrorMsg] = useState('');
-
-  const { vertical, horizontal } = snackbarState;
-
   const dispatch = useDispatch()
-  const msgHandleClose = ()=>{
-    setOpen(false);
-    setLoginErrorMsg('');
-    setAlertSeverity('info');
-  }
-  const msgHandleOpen = (msg,severity)=>{
-    setOpen(true);
-    setLoginErrorMsg(msg);
-    setAlertSeverity(severity);
-  }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -91,14 +69,13 @@ export default function SignIn() {
     setSubmitButtonStatus(true);
 
     try {
-      request.post("/user/loginssss", fieldValues)
+      request.post("/user/login", fieldValues)
         .then(res => {
           if (200 === res.code) {
             dispatch(setToken(res.data.authentication));
-            navigate("/web/other");
+            navigate("/web/projectList");
           } else {
-            setOpen(true)
-            setLoginErrorMsg(res.msg)
+            errorNotice(res.msg);
           }
         })
     }finally {
@@ -163,13 +140,6 @@ export default function SignIn() {
             >
               登 录
             </Button>
-
-            <Snackbar open={open} autoHideDuration={3500} onClose={msgHandleClose}
-                      anchorOrigin={{ vertical , horizontal }}>
-              <Alert variant="outlined" onClose={msgHandleClose} severity={alertSeverity} sx={{ width: '100%' }}>
-                {loginErrorMsg}
-              </Alert>
-            </Snackbar>
 
             <Grid container>
               <Grid item xs>

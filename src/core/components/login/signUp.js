@@ -1,22 +1,17 @@
-import React from "react"
+import React, { useState } from "react"
 import Avatar from "@mui/material/Avatar"
 import Button from "@mui/material/Button"
 import CssBaseline from "@mui/material/CssBaseline"
 import TextField from "@mui/material/TextField"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import Checkbox from "@mui/material/Checkbox"
 import Link from "@mui/material/Link"
 import Grid from "@mui/material/Grid"
 import Box from "@mui/material/Box"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
-import { useState } from "react"
 import validator from "validator/es"
-import { useDispatch, useSelector } from "react-redux"
 import { request } from "../../utils/request"
-import { Alert, Snackbar } from "@mui/material"
-import { setToken } from "../../store/modules/userStore"
+import { errorNotice, successNotice } from "../../utils/message"
 
 export default function SignUp() {
 
@@ -31,30 +26,7 @@ export default function SignUp() {
     name:""
   });
 
-  const [alertSeverity,setAlertSeverity] = useState('info');
   const [submitButtonStatus,setSubmitButtonStatus] = useState(false);
-
-  const [open,setOpen] = useState(false);
-  const [snackbarState,setSnackbarState] = useState({
-    vertical:'top',
-    horizontal:'center'
-  });
-  const [loginErrorMsg,setLoginErrorMsg] = useState('');
-
-  const { vertical, horizontal } = snackbarState;
-
-  const dispatch = useDispatch()
-  const msgHandleClose = ()=>{
-    setOpen(false);
-    setLoginErrorMsg('');
-    setAlertSeverity('info');
-  }
-
-  const msgHandleOpen = (msg,severity)=>{
-    setOpen(true);
-    setLoginErrorMsg(msg);
-    setAlertSeverity(severity);
-  }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -101,9 +73,9 @@ export default function SignUp() {
     request.post("/user/register", fieldValues)
       .then(res => {
         if (200 === res.code) {
-          msgHandleOpen("注册成功，等待邮件点击激活","info")
+          successNotice("注册成功，等待邮件点击激活");
         }else{
-          msgHandleOpen(res.msg,"error")
+          errorNotice(res.msg);
         }
       });
     setSubmitButtonStatus(false);
@@ -180,13 +152,6 @@ export default function SignUp() {
             >
               注 册
             </Button>
-
-            <Snackbar open={open} autoHideDuration={3500} onClose={msgHandleClose}
-                      anchorOrigin={{ vertical , horizontal }}>
-              <Alert variant="outlined" onClose={msgHandleClose} severity={alertSeverity} sx={{ width: '100%' }}>
-                {loginErrorMsg}
-              </Alert>
-            </Snackbar>
 
             <Grid container>
               <Grid item xs>

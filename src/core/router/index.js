@@ -3,6 +3,7 @@ import Other from "../components/other"
 import React from "react"
 import { SignIn,SignUp } from "../components/login"
 import AuthRoute from "../utils/AuthRoute"
+import ProjectList from "../components/project"
 
 const createRouter = (...routes) => {
   routes.push({
@@ -14,6 +15,9 @@ const createRouter = (...routes) => {
   }, {
     path: "signUp",
     element: <SignUp />,
+  }, {
+    path: "projectList",
+    element: <ProjectList />,
   })
 
   return createBrowserRouter([{
