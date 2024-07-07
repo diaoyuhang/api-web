@@ -3,13 +3,18 @@
  */
 import React, { useEffect } from "react"
 import { useParams } from "react-router-dom"
+import withRouterParams from "../utils/withRouterParams"
 
 function App(props) {
-  const { getComponent, layoutSelectors, specActions, specSelectors } = props
+  const { getComponent, layoutSelectors, specActions, specSelectors,routerParams } = props
   const params = useParams()
 
   useEffect(() => {
-    specActions.download("https://petstore.swagger.io/v2/swagger.json")
+    if (routerParams.projectId){
+      specActions.download("http://localhost:3201/api/getBasicApiInfoList?projectId="+encodeURIComponent(routerParams.projectId));
+    }else if(routerParams.apiId){
+      specActions.download("http://localhost:3201/api/apiMetaDateInfo?apiId="+encodeURIComponent(routerParams.apiId));
+    }
   }, [])
 
   const getLayout = () => {
@@ -25,4 +30,4 @@ function App(props) {
   return <Layout />
 }
 
-export default App
+export default withRouterParams(App);

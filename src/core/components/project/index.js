@@ -36,7 +36,7 @@ function ProjectList() {
     name: '',
   });
 
-  useEffect(() => {
+  function getProjectList(){
     request.get("/project/projectList")
       .then(res=>{
         if (res.code === 200){
@@ -45,12 +45,17 @@ function ProjectList() {
           errorNotice(res.msg);
         }
       })
-  }, [projectList]);
+  }
+
+  useEffect(() => {
+    getProjectList()
+  }, []);
 
   function handleClose(){
     setCreateProjectWindowFlag(false);
-    Object.keys(fieldValues).forEach(k => setFieldValues({ ...fieldValues, k: "" }))
-    Object.keys(errors).forEach(k => setFieldValues({ ...fieldValues, k: "" }))
+    Object.keys(fieldValues).forEach(k => setFieldValues({ ...fieldValues, k: "" }));
+    Object.keys(errors).forEach(k => setFieldValues({ ...fieldValues, k: "" }));
+    getProjectList()
   }
 
   function handleClickOpen(){
@@ -109,7 +114,7 @@ function ProjectList() {
                 </CardContent>
 
                 <CardActions>
-                  <Button size="small" onClick={()=> window.open("/web/api?projectId="+project.projectId)}>查 看</Button>
+                  <Button size="small" onClick={()=> window.open("/web/api?projectId="+encodeURIComponent(project.projectId))}>查 看</Button>
                 </CardActions>
 
               </Card>

@@ -4,6 +4,7 @@
 import { createSelector } from "reselect"
 import { Map } from "immutable"
 import win from "core/window"
+import { getToken } from "../../utils/token"
 
 export default function downloadUrlPlugin(toolbox) {
   let { fn } = toolbox
@@ -25,6 +26,7 @@ export default function downloadUrlPlugin(toolbox) {
           credentials: "same-origin",
           headers: {
             Accept: "application/json,*/*",
+            token: getToken()
           },
         }).then(next, next)
 
@@ -41,10 +43,23 @@ export default function downloadUrlPlugin(toolbox) {
             if (!res.status && res instanceof Error) checkPossibleFailReasons()
             return
           }
+
+          const data = JSON.parse(res.data)
+          if (data.code === 200){
+            if (typeof data.data ==='string'){
+              specActions.updateSpec(data.data);
+            }else{
+              specActions.updateSpec(JSON.stringify(data.data));
+            }
+
+          }else{
+            specActions.updateSpec("");
+
+          }
           specActions.updateLoadingStatus("success")
           // specActions.updateSpec(res.text)
-          const json = '{"openapi":"3.0.1","info":{"title":"项目名","version":"master"},"servers":[],"tags":[{"name":"test","description":"abababab"}],"paths":{"/test/uploadFile":{"get":{"tags":["test"],"operationId":"qwqwwqwq","summary":"测试接口1","parameters":[{"name":"file","in":"query","required":true,"schema":{"type":"string","format":"binary"}}],"requestBody":{"content":{"application/json":{}}},"responses":{"200":{"content":{"*/*":{"schema":{"type":"string"}}}}}}}},"components":{}}';
-          specActions.updateSpec(json)
+          // const json = '{"openapi":"3.0.1","info":{"title":"项目名","version":"master"},"servers":[],"tags":[{"name":"test","description":"abababab"}],"paths":{"/test/uploadFile":{"get":{"tags":["test"],"operationId":"qwqwwqwq","summary":"测试接口1","parameters":[{"name":"file","in":"query","required":true,"schema":{"type":"string","format":"binary"}}],"requestBody":{"content":{"application/json":{}}},"responses":{"200":{"content":{"*/*":{"schema":{"type":"string"}}}}}}}},"components":{}}';
+
           if (specSelectors.url() !== url) {
             specActions.updateUrl(url)
           }
