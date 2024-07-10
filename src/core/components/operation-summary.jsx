@@ -7,8 +7,12 @@ import withRouterParams from "../utils/withRouterParams"
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined"
 import Link from "@mui/material/Link"
 import HistoryIcon from '@mui/icons-material/History';
-import { Drawer } from "@mui/material"
+import { Drawer, ListItem, ListItemButton, ListItemText } from "@mui/material"
 import { request } from "../utils/request"
+import Box from "@mui/material/Box"
+import { FixedSizeList } from "react-window"
+import { errorNotice } from "../utils/message"
+import moment from "moment/moment"
 
 
 function OperationSummary (props) {
@@ -74,20 +78,36 @@ function OperationSummary (props) {
     const allowAnonymous = !hasSecurity || securityIsOptional
 
     const [drawerState, setDrawerState] = useState(false)
-    const [historyData, setHistoryData] = useState("")
+    const [historyData, setHistoryData] = useState([])
+
     const checkUpdateHistory = (apiId) => {
-      setDrawerState(true);
       request.get("/api/getApiHistoryInfo?apiId="+apiId).then(res=>{
         if (res.code === 200){
-          setHistoryData(res.data[0].editor);
+          setHistoryData(res.data);
+          setDrawerState(true);
         }else{
-
+          errorNotice(res.msg);
         }
       })
     }
     const closeDrawer = ()=>{
       setDrawerState(false);
+      setHistoryData([]);
     }
+
+  function renderRow(props) {
+    const { index, style } = props;
+    const eidtor = historyData[index].editor;
+    const time = moment(new Date(historyData[index].editTime)).format("yyyy-MM-DD hh:mm:ss");
+    return (
+
+      <ListItem style={style} key={index} component="div" disablePadding>
+        <ListItemButton>
+          <ListItemText primary={`${eidtor} ${time}`} />
+        </ListItemButton>
+      </ListItem>
+    );
+  }
 
     return (
       <div className={`opblock-summary opblock-summary-${method}`} >
@@ -137,7 +157,19 @@ function OperationSummary (props) {
           open={drawerState}
           onClose={closeDrawer}
         >
-          {historyData}
+          <Box
+            sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
+          >
+            <FixedSizeList
+              height={window.innerHeight}
+              width={360}
+              itemSize={46}
+              itemCount={historyData.length}
+              overscanCount={5}
+            >
+              {renderRow}
+            </FixedSizeList>
+          </Box>
         </Drawer>
 
         <button
