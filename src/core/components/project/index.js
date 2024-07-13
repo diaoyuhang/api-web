@@ -21,6 +21,11 @@ import { request } from "../../utils/request"
 import TextField from "@mui/material/TextField"
 import validator from "validator/es"
 import { errorNotice, successNotice } from "../../utils/message"
+import { Link } from "../layout-utils"
+import Logo from "../../../standalone/plugins/top-bar/components/Logo"
+import { Container as LayoutContainer } from "../layout-utils.jsx"
+import Avatar from "@mui/material/Avatar"
+import TopBar from "../../../standalone/plugins/top-bar/components/TopBar"
 
 
 function ProjectList() {
@@ -88,83 +93,89 @@ function ProjectList() {
   };
 
   return (
-    <Container component="main" maxWidth="lg">
-      <CssBaseline />
-      <Button variant="outlined" onClick={handleClickOpen}>新建项目</Button>
+    <LayoutContainer className='swagger-ui'>
+      <TopBar/>
 
-      <Box sx={{ flexGrow: 1, marginTop: 8 }}>
+      <Container component="main" maxWidth="lg" sx={{marginTop:4}}>
+        <CssBaseline />
 
-        <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-          {projectList.map((project, index) => (
+        <Button variant="outlined" onClick={handleClickOpen}>新建项目</Button>
 
-            <Grid item xs={2} sm={2} md={3} key={index}>
-              <Card>
-                <CardHeader
-                  action={
-                    <IconButton aria-label="settings">
-                      <MoreVertIcon />
-                    </IconButton>
-                  }
-                  title={project.name}
-                />
-                <CardContent>
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                    {project.description}
-                  </Typography>
-                </CardContent>
+        <Box sx={{ flexGrow: 1, marginTop: 8 }}>
 
-                <CardActions>
-                  <Button size="small" onClick={()=> window.open("/web/api?projectId="+encodeURIComponent(project.projectId))}>查 看</Button>
-                </CardActions>
+          <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+            {projectList.map((project, index) => (
 
-              </Card>
+              <Grid item xs={2} sm={2} md={3} key={index}>
+                <Card>
+                  <CardHeader
+                    action={
+                      <IconButton aria-label="settings">
+                        <MoreVertIcon />
+                      </IconButton>
+                    }
+                    title={project.name}
+                  />
+                  <CardContent>
+                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                      {project.description}
+                    </Typography>
+                  </CardContent>
 
-            </Grid>
-          ))}
+                  <CardActions>
+                    <Button size="small"
+                            onClick={() => window.open("/web/api?projectId=" + encodeURIComponent(project.projectId))}>查
+                      看</Button>
+                  </CardActions>
 
-        </Grid>
-      </Box>
+                </Card>
 
-      <Dialog open={createProjectWindowFlag} onClose={handleClose}>
-        <DialogTitle>新建项目</DialogTitle>
-        <DialogContent>
+              </Grid>
+            ))}
 
-          <TextField
-            required
-            autoFocus
-            margin="dense"
-            id="name"
-            label="项目名"
-            type="name"
-            name="name"
-            value={fieldValues.name}
-            fullWidth
-            variant="standard"
-            onChange={handleChange}
-            error={Boolean(errors.name)}
-            helperText={errors.name}
-          />
+          </Grid>
+        </Box>
 
-          <TextField
-            margin="dense"
-            id="description"
-            label="项目描述"
-            value={fieldValues.description}
-            type="description"
-            fullWidth
-            variant="standard"
-            name="description"
-            onChange={handleChange}
+        <Dialog open={createProjectWindowFlag} onClose={handleClose}>
+          <DialogTitle>新建项目</DialogTitle>
+          <DialogContent>
 
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>取消</Button>
-          <Button onClick={createProject}>创建</Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
+            <TextField
+              required
+              autoFocus
+              margin="dense"
+              id="name"
+              label="项目名"
+              type="name"
+              name="name"
+              value={fieldValues.name}
+              fullWidth
+              variant="standard"
+              onChange={handleChange}
+              error={Boolean(errors.name)}
+              helperText={errors.name}
+            />
 
+            <TextField
+              margin="dense"
+              id="description"
+              label="项目描述"
+              value={fieldValues.description}
+              type="description"
+              fullWidth
+              variant="standard"
+              name="description"
+              onChange={handleChange}
+
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>取消</Button>
+            <Button onClick={createProject}>创建</Button>
+          </DialogActions>
+        </Dialog>
+      </Container>
+    </LayoutContainer>
   )
 }
 

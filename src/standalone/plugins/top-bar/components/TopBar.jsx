@@ -2,10 +2,14 @@ import React, { cloneElement } from "react"
 import PropTypes from "prop-types"
 
 import {parseSearch, serializeSearch} from "core/utils"
+import Avatar from "@mui/material/Avatar"
+import { Link } from "../../../../core/components/layout-utils"
+import Logo from "./Logo"
+import { deepOrange, deepPurple } from '@mui/material/colors';
 
 class TopBar extends React.Component {
 
-  static propTypes = {
+  /*static propTypes = {
     layoutActions: PropTypes.object.isRequired,
     authActions: PropTypes.object.isRequired
   }
@@ -106,10 +110,10 @@ class TopBar extends React.Component {
   onFilterChange =(e) => {
     let {target: {value}} = e
     this.props.layoutActions.updateFilter(value)
-  }
+  }*/
 
   render() {
-    let { getComponent, specSelectors, getConfigs } = this.props
+/*    let { getComponent, specSelectors, getConfigs } = this.props
     const Button = getComponent("Button")
     const Link = getComponent("Link")
     const Logo = getComponent("Logo")
@@ -152,7 +156,7 @@ class TopBar extends React.Component {
         />
       )
       control.push(<Button className="download-url-button" onClick={ this.downloadUrl }>Explore</Button>)
-    }
+    }*/
 
     return (
       <div className="topbar">
@@ -161,21 +165,20 @@ class TopBar extends React.Component {
             <Link>
               <Logo/>
             </Link>
-            {/*<form className="download-url-wrapper" onSubmit={formOnSubmit}>
-              {control.map((el, i) => cloneElement(el, { key: i }))}
-            </form>*/}
           </div>
+          <Avatar sx={{ bgcolor: deepOrange[500] }}>N</Avatar>
+
         </div>
       </div>
     )
   }
 }
 
-TopBar.propTypes = {
+/*TopBar.propTypes = {
   specSelectors: PropTypes.object.isRequired,
   specActions: PropTypes.object.isRequired,
   getComponent: PropTypes.func.isRequired,
   getConfigs: PropTypes.func.isRequired
-}
+}*/
 
 export default TopBar
