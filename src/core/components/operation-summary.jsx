@@ -7,12 +7,13 @@ import withRouterParams from "../utils/withRouterParams"
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined"
 import Link from "@mui/material/Link"
 import HistoryIcon from '@mui/icons-material/History';
-import { Drawer, ListItem, ListItemButton, ListItemText } from "@mui/material"
+import { Drawer, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from "@mui/material"
 import { request } from "../utils/request"
 import Box from "@mui/material/Box"
 import { FixedSizeList } from "react-window"
 import { errorNotice } from "../utils/message"
 import moment from "moment/moment"
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 
 
 function OperationSummary (props) {
@@ -103,8 +104,14 @@ function OperationSummary (props) {
 
       <ListItem style={style} key={index} component="div" disablePadding>
         <ListItemButton>
-          <ListItemText primary={`${eidtor} ${time}`} />
+          <Tooltip title={time}  placement="bottom-start">
+            <ListItemIcon>
+              <AccessTimeOutlinedIcon />
+            </ListItemIcon>
+          </Tooltip>
+          <ListItemText primary={`${eidtor}`} />
         </ListItemButton>
+
       </ListItem>
     );
   }
