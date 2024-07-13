@@ -1,21 +1,28 @@
 /**
  * @prettier
  */
-import React from "react"
+import React, { useState } from "react"
 import PropTypes from "prop-types"
+import Box from "@mui/material/Box"
+import { FixedSizeList } from "react-window"
+import { List,Drawer, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from "@mui/material"
+import { request } from "../../utils/request"
+import { errorNotice } from "../../utils/message"
+import moment from "moment"
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined"
 
-export default class BaseLayout extends React.Component {
-  static propTypes = {
+export default function BaseLayout(props) {
+/*  static propTypes = {
     errSelectors: PropTypes.object.isRequired,
     errActions: PropTypes.object.isRequired,
     specSelectors: PropTypes.object.isRequired,
     oas3Selectors: PropTypes.object.isRequired,
     oas3Actions: PropTypes.object.isRequired,
     getComponent: PropTypes.func.isRequired,
-  }
+  }*/
 
-  render() {
-    const { errSelectors, specSelectors, getComponent } = this.props
+  // render() {
+    const { errSelectors, specSelectors, getComponent } = props
 
     const SvgAssets = getComponent("SvgAssets")
     const InfoContainer = getComponent("InfoContainer", true)
@@ -40,6 +47,49 @@ export default class BaseLayout extends React.Component {
     const loadingStatus = specSelectors.loadingStatus()
 
     let loadingMessage = null
+    const [drawerState, setDrawerState] = useState(false)
+    const [historyData, setHistoryData] = useState([])
+
+    const checkUpdateHistory = (apiId) => {
+      request.get("/api/getApiHistoryInfo?apiId=" + apiId).then(res => {
+        if (res.code === 200) {
+          setHistoryData(res.data)
+          setDrawerState(true)
+        } else {
+          errorNotice(res.msg)
+        }
+      })
+    }
+    const closeDrawer = () => {
+      setDrawerState(false)
+      setHistoryData([])
+    }
+    function renderRow(props) {
+      console.log("========")
+      const { index, style } = props;
+      const editor = historyData[index].editor;
+      const operationType = historyData[index].operationType;
+      const historyId = historyData[index].historyId;
+      const operationName = operationType === 1 ? "新增" : (operationType === 2 ? "更新" : "删除")
+      const time = moment(new Date(historyData[index].editTime)).format("yyyy-MM-DD hh:mm:ss");
+
+      return (
+
+        <ListItem style={style} key={index} component="div" disablePadding>
+
+          <ListItemButton onClick={() => window.open("/web/historyApi?historyId=" + encodeURIComponent(historyId))} >
+            <Tooltip title={time}  placement="bottom-start">
+              <ListItemIcon>
+                <AccessTimeOutlinedIcon />
+              </ListItemIcon>
+            </Tooltip>
+            <ListItemText sx={{textAlign:'center'}} primary={editor} />
+            <ListItemText sx={{textAlign:'right'}} primary={operationName}/>
+          </ListItemButton>
+
+        </ListItem>
+      );
+    }
 
     if (loadingStatus === "loading") {
       loadingMessage = (
@@ -127,7 +177,7 @@ export default class BaseLayout extends React.Component {
 
           <Row>
             <Col mobile={12} desktop={12}>
-              <Operations />
+              <Operations checkUpdateHistory={checkUpdateHistory}/>
             </Col>
           </Row>
 
@@ -145,7 +195,32 @@ export default class BaseLayout extends React.Component {
             </Col>
           </Row>
         </VersionPragmaFilter>
+
+        <Drawer
+          anchor={'left'}
+          open={drawerState}
+          onClose={closeDrawer}
+        >
+          <Box
+            sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
+          >
+            <List>
+              <ListItem disablePadding>
+                <ListItemText sx={{textAlign:"center"}} primary="历史记录" />
+              </ListItem>
+            </List>
+            <FixedSizeList
+              height={window.innerHeight}
+              width={360}
+              itemSize={46}
+              itemCount={historyData.length}
+              overscanCount={5}
+            >
+              {renderRow}
+            </FixedSizeList>
+          </Box>
+        </Drawer>
       </div>
     )
-  }
+  // }
 }

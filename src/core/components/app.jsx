@@ -8,13 +8,17 @@ import withRouterParams from "../utils/withRouterParams"
 function App(props) {
   const { getComponent, layoutSelectors, specActions, specSelectors,routerParams } = props
   const params = useParams()
-
+  const baseURL = 'http://localhost:3201';
   useEffect(() => {
+    let url = '';
     if (routerParams.projectId){
-      specActions.download("http://localhost:3201/api/getBasicApiInfoList?projectId="+encodeURIComponent(routerParams.projectId));
+      url = baseURL + "/api/getBasicApiInfoList?projectId=" + encodeURIComponent(routerParams.projectId);
     }else if(routerParams.apiId){
-      specActions.download("http://localhost:3201/api/apiMetaDateInfo?apiId="+encodeURIComponent(routerParams.apiId));
+      url = baseURL+"/api/apiMetaDateInfo?apiId="+encodeURIComponent(routerParams.apiId);
+    }else if(routerParams.historyId){
+      url = baseURL+"/api/historyApiMetaDateInfo?historyId="+encodeURIComponent(routerParams.historyId);
     }
+    specActions.download(url);
   }, [])
 
   const getLayout = () => {

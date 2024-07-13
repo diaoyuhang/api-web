@@ -121,6 +121,9 @@ function SwaggerUI(userOptions) {
     },{
       path:"shareApi",
       element:<App/>
+    },{
+      path:"historyApi",
+      element:<App/>
     })
 
     root.render(

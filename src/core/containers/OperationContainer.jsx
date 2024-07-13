@@ -83,12 +83,17 @@ class OperationContainer extends PureComponent {
   }
 
   componentDidMount() {
-    const { isShown } = this.props
+    const { isShown,routerParams } = this.props
     const resolvedSubtree = this.getResolvedSubtree()
 
     if(isShown && resolvedSubtree === undefined) {
       this.requestResolvedSubtree()
     }
+
+    if (routerParams.apiId||routerParams.historyId){
+      this.requestResolvedSubtree();
+    }
+
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -197,14 +202,12 @@ class OperationContainer extends PureComponent {
       oas3Actions,
       oas3Selectors,
       fn,
-      routerParams
+      routerParams,
+      checkUpdateHistory
     } = this.props
 
     const Operation = getComponent( "operation" )
 
-    if (routerParams.apiId){
-      this.requestResolvedSubtree();
-    }
     const resolvedSubtree = this.getResolvedSubtree() || Map()
 
     const operationProps = fromJS({
@@ -255,6 +258,7 @@ class OperationContainer extends PureComponent {
         getComponent={ getComponent }
         getConfigs={ getConfigs }
         fn={fn}
+        checkUpdateHistory={checkUpdateHistory}
       />
     )
   }

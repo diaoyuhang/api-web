@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import PropTypes from "prop-types"
 import Im, { List, OrderedMap } from "immutable"
 
@@ -17,10 +17,11 @@ export default class Operations extends React.Component {
     getConfigs: PropTypes.func.isRequired,
     fn: PropTypes.func.isRequired
   }
-
   render() {
+
     let {
       specSelectors,
+      checkUpdateHistory
     } = this.props
 
     const taggedOps = specSelectors.taggedOperations()
@@ -45,6 +46,7 @@ export default class Operations extends React.Component {
       layoutSelectors,
       layoutActions,
       getConfigs,
+      checkUpdateHistory
     } = this.props
     const validOperationMethods = specSelectors.validOperationMethods()
     const OperationContainer = getComponent("OperationContainer", true)
@@ -79,7 +81,8 @@ export default class Operations extends React.Component {
                   op={op}
                   path={path}
                   method={method}
-                  tag={tag} />
+                  tag={tag}
+                  checkUpdateHistory={checkUpdateHistory}/>
               )
             }).toArray()
           }

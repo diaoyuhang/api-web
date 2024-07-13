@@ -63,7 +63,8 @@ import RollingLoadSVG from "core/assets/rolling-load.svg"
       authSelectors,
       oas3Actions,
       oas3Selectors,
-      routerParams
+      routerParams,
+      checkUpdateHistory
     } = this.props
     let operationProps = this.props.operation
 
@@ -121,8 +122,8 @@ import RollingLoadSVG from "core/assets/rolling-load.svg"
 
     return (
         <div className={deprecated ? "opblock opblock-deprecated" : isShown ? `opblock opblock-${method} is-open` : `opblock opblock-${method}`} id={escapeDeepLinkPath(isShownKey.join("-"))} >
-          <OperationSummary operationProps={operationProps} isShown={isShown} toggleShown={()=>toggleShown(`/web/api?apiId=${encodeURIComponent(operationId)}`)} getComponent={getComponent} authActions={authActions} authSelectors={authSelectors} specPath={specPath} />
-          <Collapse isOpened={routerParams.apiId}>
+          <OperationSummary checkUpdateHistory={checkUpdateHistory} operationProps={operationProps} isShown={isShown} toggleShown={()=>toggleShown(`/web/api?apiId=${encodeURIComponent(operationId)}`)} getComponent={getComponent} authActions={authActions} authSelectors={authSelectors} specPath={specPath} />
+          <Collapse isOpened={routerParams.apiId||routerParams.historyId}>
             <div className="opblock-body">
               { (operation && operation.size) || operation === null ? null :
                 <RollingLoadSVG height="32px" width="32px" className="opblock-loading-animation" />

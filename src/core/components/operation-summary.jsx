@@ -45,7 +45,8 @@ function OperationSummary (props) {
       authSelectors,
       operationProps,
       specPath,
-      routerParams
+      routerParams,
+      checkUpdateHistory
     } = props
 
     let {
@@ -77,44 +78,6 @@ function OperationSummary (props) {
     const hasSecurity = security && !!security.count()
     const securityIsOptional = hasSecurity && security.size === 1 && security.first().isEmpty()
     const allowAnonymous = !hasSecurity || securityIsOptional
-
-    const [drawerState, setDrawerState] = useState(false)
-    const [historyData, setHistoryData] = useState([])
-
-    const checkUpdateHistory = (apiId) => {
-      request.get("/api/getApiHistoryInfo?apiId="+apiId).then(res=>{
-        if (res.code === 200){
-          setHistoryData(res.data);
-          setDrawerState(true);
-        }else{
-          errorNotice(res.msg);
-        }
-      })
-    }
-    const closeDrawer = ()=>{
-      setDrawerState(false);
-      setHistoryData([]);
-    }
-
-  function renderRow(props) {
-    const { index, style } = props;
-    const eidtor = historyData[index].editor;
-    const time = moment(new Date(historyData[index].editTime)).format("yyyy-MM-DD hh:mm:ss");
-    return (
-
-      <ListItem style={style} key={index} component="div" disablePadding>
-        <ListItemButton>
-          <Tooltip title={time}  placement="bottom-start">
-            <ListItemIcon>
-              <AccessTimeOutlinedIcon />
-            </ListItemIcon>
-          </Tooltip>
-          <ListItemText primary={`${eidtor}`} />
-        </ListItemButton>
-
-      </ListItem>
-    );
-  }
 
     return (
       <div className={`opblock-summary opblock-summary-${method}`} >
@@ -149,35 +112,22 @@ function OperationSummary (props) {
         }
         <JumpToPath path={specPath} />{/* TODO: use wrapComponents here, swagger-ui doesn't care about jumpToPath */}
 
-        <Link href={"/web/shareApi?apiId=" + encodeURIComponent(operationProps.get("operationId") || routerParams.apiId)} underline="hover"
-              color="inherit" sx={{ "&:hover": { backgroundColor: "#c1c3c7", borderRadius: 1 } }} target="_blank">
-          <ShareOutlinedIcon />
-        </Link>
+        {!routerParams.historyId && (
+          <Link
+            href={"/web/shareApi?apiId=" + encodeURIComponent(operationProps.get("operationId") || routerParams.apiId)}
+            underline="hover"
+            color="inherit" sx={{ "&:hover": { backgroundColor: "#c1c3c7", borderRadius: 1 } }} target="_blank">
+            <ShareOutlinedIcon />
+          </Link>
+        )}
+        {!routerParams.historyId && (
+          <Link href="#" underline="hover"
+                onClick={() => checkUpdateHistory(encodeURIComponent(operationProps.get("operationId") || routerParams.apiId))}
+                color="inherit" sx={{ "&:hover": { backgroundColor: "#c1c3c7", borderRadius: 1 } }}>
+            <HistoryIcon />
+          </Link>
+        )}
 
-        <Link href="#" underline="hover" onClick={()=>checkUpdateHistory(encodeURIComponent(operationProps.get("operationId") || routerParams.apiId))}
-              color="inherit" sx={{ "&:hover": { backgroundColor: "#c1c3c7", borderRadius: 1 } }}>
-          <HistoryIcon />
-        </Link>
-
-        <Drawer
-          anchor={'left'}
-          open={drawerState}
-          onClose={closeDrawer}
-        >
-          <Box
-            sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
-          >
-            <FixedSizeList
-              height={window.innerHeight}
-              width={360}
-              itemSize={46}
-              itemCount={historyData.length}
-              overscanCount={5}
-            >
-              {renderRow}
-            </FixedSizeList>
-          </Box>
-        </Drawer>
 
         <button
           aria-label={`${method} ${path.replace(/\//g, "\u200b/")}`}
