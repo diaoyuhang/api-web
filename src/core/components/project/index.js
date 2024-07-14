@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Menu, MenuItem,
 } from "@mui/material"
 import CssBaseline from "@mui/material/CssBaseline"
 import Container from "@mui/material/Container"
@@ -21,11 +22,10 @@ import { request } from "../../utils/request"
 import TextField from "@mui/material/TextField"
 import validator from "validator/es"
 import { errorNotice, successNotice } from "../../utils/message"
-import { Link } from "../layout-utils"
-import Logo from "../../../standalone/plugins/top-bar/components/Logo"
 import { Container as LayoutContainer } from "../layout-utils.jsx"
-import Avatar from "@mui/material/Avatar"
 import TopBar from "../../../standalone/plugins/top-bar/components/TopBar"
+import { useNavigate } from "react-router-dom"
+import NavigationUtil from "../../utils/navigationUtil"
 
 
 function ProjectList() {
@@ -40,6 +40,11 @@ function ProjectList() {
   const [errors, setErrors] = useState({
     name: '',
   });
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    NavigationUtil.setNavigate(navigate);
+  }, [navigate]);
 
   function getProjectList(){
     request.get("/project/projectList")
@@ -92,6 +97,44 @@ function ProjectList() {
     setFieldValues({ ...fieldValues, [name]: value });
   };
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const menuOpen = Boolean(anchorEl);
+  function handleCloseMenu(event){
+    setAnchorEl(null);
+
+  }
+  function handleOpenMenu(event){
+    setAnchorEl(event.currentTarget);
+  }
+
+
+  const [openDelete, setOpenDelete] = useState(false)
+  const [deleteProjectId, setDeleteProjectId] = useState("")
+  function handleOpenDelete(projectId){
+    setOpenDelete(true);
+    setDeleteProjectId(projectId)
+    handleCloseMenu()
+  }
+
+  function handleCloseDelete(){
+    setOpenDelete(false);
+    setDeleteProjectId("");
+  }
+
+  function handleDelete(){
+    request.post("/project/deleteProject",{projectId:deleteProjectId})
+      .then(res=>{
+        if (res.code === 200){
+          successNotice("删除成功");
+          handleCloseDelete();
+          setProjectList([]);
+        }else{
+          errorNotice(res.msg);
+          handleCloseDelete();
+        }
+      })
+  }
+
   return (
     <LayoutContainer className='swagger-ui'>
       <TopBar/>
@@ -110,7 +153,7 @@ function ProjectList() {
                 <Card>
                   <CardHeader
                     action={
-                      <IconButton aria-label="settings">
+                      <IconButton aria-label="settings" onClick={handleOpenMenu} id={project.projectId}>
                         <MoreVertIcon />
                       </IconButton>
                     }
@@ -129,8 +172,19 @@ function ProjectList() {
                   </CardActions>
 
                 </Card>
+                <Menu
+                  id={project.projectId}
+                  open={menuOpen}
+                  onClose={handleCloseMenu}
+                  anchorEl={anchorEl}
+                  MenuListProps={{ "aria-labelledby": `${project.projectId}` }}>
+
+                  <MenuItem >添加成员</MenuItem>
+                  <MenuItem onClick={()=>handleOpenDelete(project.projectId)}>删除</MenuItem>
+                </Menu>
 
               </Grid>
+
             ))}
 
           </Grid>
@@ -174,6 +228,22 @@ function ProjectList() {
             <Button onClick={createProject}>创建</Button>
           </DialogActions>
         </Dialog>
+
+        <Dialog
+          open={openDelete}
+          onClose={handleCloseDelete}
+          aria-labelledby="alert-dialog-title"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"确认删除项目?"}
+          </DialogTitle>
+
+          <DialogActions>
+            <Button onClick={handleCloseDelete}>取消</Button>
+            <Button onClick={handleDelete} autoFocus>提交</Button>
+          </DialogActions>
+        </Dialog>
+
       </Container>
     </LayoutContainer>
   )

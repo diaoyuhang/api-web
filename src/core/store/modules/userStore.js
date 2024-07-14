@@ -4,14 +4,12 @@ const userStore = createSlice({
   name: "user",
   initialState: {
     token: getToken() || "",
-    email: '',
-    name: '',
   },
   reducers: {
     setToken(state, action) {
       state.token = action.payload;
       _setToken(action.payload);
-    },
+    }
   },
 })
 

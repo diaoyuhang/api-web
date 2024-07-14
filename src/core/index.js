@@ -32,8 +32,9 @@ import SyntaxHighlightingPlugin from "core/plugins/syntax-highlighting"
 import VersionsPlugin from "core/plugins/versions"
 import SafeRenderPlugin from "./plugins/safe-render"
 import ReactDOM from "react-dom"
-import React from "react"
+import React, { useEffect } from "react"
 import createRouter from "./router"
+import NavigationUtil from "./utils/navigationUtil"
 
 import {
   defaultOptions,
@@ -46,7 +47,7 @@ import {
   typeCastOptions,
   typeCastMappings,
 } from "./config"
-import { RouterProvider } from "react-router-dom"
+import { RouterProvider, useNavigate } from "react-router-dom"
 import { Provider } from "react-redux"
 import store from "./store"
 import AuthRoute from "./utils/AuthRoute"

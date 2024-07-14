@@ -2,13 +2,20 @@
  * @prettier
  */
 import React, { useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import withRouterParams from "../utils/withRouterParams"
+import NavigationUtil from "../utils/navigationUtil"
 
 function App(props) {
   const { getComponent, layoutSelectors, specActions, specSelectors,routerParams } = props
   const params = useParams()
   const baseURL = 'http://localhost:3201';
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    NavigationUtil.setNavigate(navigate);
+  }, [navigate]);
+
   useEffect(() => {
     let url = '';
     if (routerParams.projectId){
