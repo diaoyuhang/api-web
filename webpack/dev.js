@@ -78,6 +78,10 @@ const devConfig = configBuilder(
         context:["/api"],
         target: 'http://localhost:8080', // 将请求代理到的目标服务器
         changeOrigin: true, // 允许改变原始主机头为目标URL
+      },{
+        context:["/permission"],
+        target: 'http://localhost:8080', // 将请求代理到的目标服务器
+        changeOrigin: true, // 允许改变原始主机头为目标URL
       }],
     },
 

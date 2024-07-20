@@ -65,7 +65,6 @@ export default function BaseLayout(props) {
       setHistoryData([])
     }
     function renderRow(props) {
-      console.log("========")
       const { index, style } = props;
       const editor = historyData[index].editor;
       const operationType = historyData[index].operationType;

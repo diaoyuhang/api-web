@@ -4,12 +4,21 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Drawer,
+  FormControlLabel,
+  FormGroup,
   IconButton,
-  Menu, MenuItem,
+  List,
+  ListItem,
+  ListItemButton, ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
 } from "@mui/material"
 import CssBaseline from "@mui/material/CssBaseline"
 import Container from "@mui/material/Container"
@@ -26,6 +35,8 @@ import { Container as LayoutContainer } from "../layout-utils.jsx"
 import TopBar from "../../../standalone/plugins/top-bar/components/TopBar"
 import { useNavigate } from "react-router-dom"
 import NavigationUtil from "../../utils/navigationUtil"
+import { FixedSizeList } from "react-window"
+import AddIcon from '@mui/icons-material/Add'
 
 
 function ProjectList() {
@@ -99,6 +110,7 @@ function ProjectList() {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const menuOpen = Boolean(anchorEl);
+  const [projectId,setProjectId] = useState(null);
   function handleCloseMenu(event){
     setAnchorEl(null);
 
@@ -109,11 +121,11 @@ function ProjectList() {
 
 
   const [openDelete, setOpenDelete] = useState(false)
-  const [deleteProjectId, setDeleteProjectId] = useState("")
   function handleOpenDelete(projectId){
     setOpenDelete(true);
     setDeleteProjectId(projectId)
     handleCloseMenu()
+    setAnchorEl(null);
   }
 
   function handleCloseDelete(){
@@ -133,6 +145,129 @@ function ProjectList() {
           handleCloseDelete();
         }
       })
+  }
+
+  const [drawerState, setDrawerState] = useState(false);
+  const [permissionType, setPermissionType] = useState([]);
+  const [deleteProjectId, setDeleteProjectId] = useState("");
+  const [projectAuthInfoList,setProjectAuthInfoList] = useState([]);
+
+  useEffect(() => {
+    request.get("/permission/getPermissionTypeList").then(r => {
+      if (r.code === 200){
+        r.data.pop();
+        setPermissionType(r.data);
+      }else{
+        errorNotice(r.msg);
+      }
+    })
+  }, [])
+
+  function editPermission(projectId) {
+    request.get("/permission/getProjectAuthInfo?projectId="+encodeURIComponent(projectId)).then(r => {
+      if (r.code === 200) {
+        setProjectAuthInfoList(r.data)
+        setDrawerState(true)
+        setProjectId(projectId)
+      } else {
+        errorNotice(r.msg)
+      }
+    })
+    setAnchorEl(null);
+  }
+
+  function closeDrawer(){
+    setDrawerState(false);
+    setProjectId(null);
+    setProjectAuthInfoList([]);
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const checkboxes = event.currentTarget.querySelectorAll('input[name="permission"]:checked');
+    const permissions = Array.from(checkboxes).map(checkbox => checkbox.value);
+    const email = data.get('email')
+    if (!email){
+      errorNotice("邮箱不能为空")
+      return;
+    }
+    if (permissions.length<1){
+      errorNotice("权限不能为空")
+      return;
+    }
+    if (!projectId){
+      errorNotice("项目id不能为空")
+      return;
+    }
+
+    request.post("/permission/addPermission", {
+      email: email,
+      permissionTypes: permissions,
+      projectId: projectId
+    }, ).then(r =>{
+      if (r.code === 200){
+        successNotice("保存成功");
+      }else{
+        errorNotice(r.msg);
+      }
+    });
+  };
+
+  const deleteProjectAuth=(email,index)=>{
+    if (!email){
+      setProjectAuthInfoList(projectAuthInfoList.filter((_, i) => i !== index));
+      return;
+    }
+    request.post("/permission/deletePermission", {
+      email: email,
+      projectId: projectId
+    }).then(r  =>{
+      if (r.code === 200){
+        successNotice("删除成功");
+        setProjectAuthInfoList(projectAuthInfoList.filter((_, i) => i !== index));
+      }else{
+        errorNotice(r.msg);
+      }
+    })
+  }
+
+  const addNewEmail = ()=>{
+    setProjectAuthInfoList([{
+      email:"",
+      permissionType:[],
+    },...projectAuthInfoList]);
+  }
+
+  function renderRow(props) {
+    const { index, style } = props;
+    const projectAuthInfo = projectAuthInfoList[index]
+    const emailReadOnly = projectAuthInfo.email?true:false;
+    return (
+
+      <ListItem style={style} key={index} component="div">
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+        <ListItemButton>
+            <TextField name="email" InputProps={{readOnly: emailReadOnly}} label="邮箱" variant="standard" size="small" defaultValue={projectAuthInfo.email} />
+
+            <FormGroup row={true}>
+              {
+                permissionType.map(p=>{
+                  return (
+                    <FormControlLabel key={p.type}
+                                      control={<Checkbox defaultChecked = {projectAuthInfo.permissionType.indexOf(p.type) > -1}
+                                                         name="permission" value={p.type} />} label={p.desc} />
+                  )})
+              }
+            </FormGroup>
+
+            <Button type="submit">保存</Button>
+            <Button onClick={()=>deleteProjectAuth(projectAuthInfo.email,index)}>删除</Button>
+        </ListItemButton>
+        </Box>
+
+      </ListItem>
+    );
   }
 
   return (
@@ -179,7 +314,7 @@ function ProjectList() {
                   anchorEl={anchorEl}
                   MenuListProps={{ "aria-labelledby": `${project.projectId}` }}>
 
-                  <MenuItem >添加成员</MenuItem>
+                  <MenuItem onClick={()=>editPermission(project.projectId)}>添加成员</MenuItem>
                   <MenuItem onClick={()=>handleOpenDelete(project.projectId)}>删除</MenuItem>
                 </Menu>
 
@@ -243,6 +378,33 @@ function ProjectList() {
             <Button onClick={handleDelete} autoFocus>提交</Button>
           </DialogActions>
         </Dialog>
+
+        <Drawer
+          anchor={'left'}
+          open={drawerState}
+          onClose={closeDrawer}
+        >
+          <Box sx={{ width: '100%', height: 400, maxWidth: 1000, bgcolor: 'background.paper' }}>
+            <List>
+              <ListItemButton onClick={addNewEmail}>
+                <ListItemIcon>
+                  <AddIcon />
+                </ListItemIcon>
+                <ListItemText sx={{textAlign:"left"}} primary="添加成员" />
+              </ListItemButton>
+            </List>
+
+          <FixedSizeList
+            height={window.innerHeight}
+            width={1000}
+            itemSize={60}
+            itemCount={projectAuthInfoList.length}
+            overscanCount={5}
+          >
+            {renderRow}
+          </FixedSizeList>
+          </Box>
+        </Drawer>
 
       </Container>
     </LayoutContainer>
