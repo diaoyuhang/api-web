@@ -95,7 +95,6 @@ function ProjectList() {
         if (res.code === 200){
           successNotice("创建成功");
           handleClose();
-          setProjectList([]);
         }else{
           errorNotice(res.msg);
         }
@@ -108,15 +107,20 @@ function ProjectList() {
     setFieldValues({ ...fieldValues, [name]: value });
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const menuOpen = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = React.useState({});
   const [projectId,setProjectId] = useState(null);
-  function handleCloseMenu(event){
-    setAnchorEl(null);
-
+  function handleCloseMenu(projectId){
+    setAnchorEl((prev) => ({
+      ...prev,
+      [projectId]: null,
+    }));
   }
-  function handleOpenMenu(event){
-    setAnchorEl(event.currentTarget);
+
+  function handleOpenMenu(event,projectId){
+    setAnchorEl((prev) => ({
+      ...prev,
+      [projectId]: event.currentTarget,
+    }));
   }
 
 
@@ -124,13 +128,13 @@ function ProjectList() {
   function handleOpenDelete(projectId){
     setOpenDelete(true);
     setDeleteProjectId(projectId)
-    handleCloseMenu()
-    setAnchorEl(null);
+    handleCloseMenu(projectId)
   }
 
   function handleCloseDelete(){
     setOpenDelete(false);
     setDeleteProjectId("");
+    getProjectList()
   }
 
   function handleDelete(){
@@ -139,7 +143,6 @@ function ProjectList() {
         if (res.code === 200){
           successNotice("删除成功");
           handleCloseDelete();
-          setProjectList([]);
         }else{
           errorNotice(res.msg);
           handleCloseDelete();
@@ -173,7 +176,7 @@ function ProjectList() {
         errorNotice(r.msg)
       }
     })
-    setAnchorEl(null);
+    handleCloseMenu(projectId);
   }
 
   function closeDrawer(){
@@ -282,45 +285,47 @@ function ProjectList() {
         <Box sx={{ flexGrow: 1, marginTop: 8 }}>
 
           <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-            {projectList.map((project, index) => (
+            {projectList.map((project, index) => {
+              let projectId = project.projectId;
+              return (
+                <Grid item xs={2} sm={2} md={3} key={index}>
+                  <Card>
+                    <CardHeader
+                      action={
+                        <IconButton aria-label="settings" onClick={(event)=>handleOpenMenu(event,projectId)} id={projectId}>
+                          <MoreVertIcon />
+                        </IconButton>
+                      }
+                      title={project.name}
+                    />
+                    <CardContent>
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        {project.description}
+                      </Typography>
+                    </CardContent>
 
-              <Grid item xs={2} sm={2} md={3} key={index}>
-                <Card>
-                  <CardHeader
-                    action={
-                      <IconButton aria-label="settings" onClick={handleOpenMenu} id={project.projectId}>
-                        <MoreVertIcon />
-                      </IconButton>
-                    }
-                    title={project.name}
-                  />
-                  <CardContent>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                      {project.description}
-                    </Typography>
-                  </CardContent>
+                    <CardActions>
+                      <Button size="small"
+                              onClick={() => window.open("/web/api?projectId=" + encodeURIComponent(projectId))}>查
+                        看</Button>
+                    </CardActions>
 
-                  <CardActions>
-                    <Button size="small"
-                            onClick={() => window.open("/web/api?projectId=" + encodeURIComponent(project.projectId))}>查
-                      看</Button>
-                  </CardActions>
+                  </Card>
+                  <Menu
+                    id={projectId}
+                    open={ Boolean(anchorEl[projectId])}
+                    onClose={()=>handleCloseMenu(projectId)}
+                    anchorEl={anchorEl[projectId]}
+                    MenuListProps={{ "aria-labelledby": `${projectId}` }}>
 
-                </Card>
-                <Menu
-                  id={project.projectId}
-                  open={menuOpen}
-                  onClose={handleCloseMenu}
-                  anchorEl={anchorEl}
-                  MenuListProps={{ "aria-labelledby": `${project.projectId}` }}>
+                    <MenuItem onClick={() => editPermission(projectId)}>添加成员</MenuItem>
+                    <MenuItem onClick={() => handleOpenDelete(projectId)}>删除</MenuItem>
+                  </Menu>
 
-                  <MenuItem onClick={()=>editPermission(project.projectId)}>添加成员</MenuItem>
-                  <MenuItem onClick={()=>handleOpenDelete(project.projectId)}>删除</MenuItem>
-                </Menu>
+                </Grid>
 
-              </Grid>
-
-            ))}
+              )
+            })}
 
           </Grid>
         </Box>
