@@ -82,11 +82,11 @@ export default class OperationTag extends React.Component {
             isShown={showTag}
             path={createDeepLinkPath(tag)}
             text={tag} />
-          {!tagDescription ? <small></small> :
+          {/*{!tagDescription ? <small></small> :
             <small>
               <Markdown source={tagDescription} />
             </small>
-          }
+          }*/}
 
           {!tagExternalDocsUrl ? null :
             <div className="info__externaldocs">
