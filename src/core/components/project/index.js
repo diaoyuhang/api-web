@@ -37,6 +37,7 @@ import { useNavigate } from "react-router-dom"
 import NavigationUtil from "../../utils/navigationUtil"
 import { FixedSizeList } from "react-window"
 import AddIcon from '@mui/icons-material/Add'
+import ProjectParam from "./ProjectParam"
 
 
 function ProjectList() {
@@ -242,6 +243,15 @@ function ProjectList() {
     },...projectAuthInfoList]);
   }
 
+  // 项目参数配置
+  const [paramDrawerState,setParamDrawerState] =useState(false);
+  function editParam(projectId) {
+    setParamDrawerState(true);
+    setProjectId(projectId);
+    handleCloseMenu(projectId);
+  }
+
+
   function renderRow(props) {
     const { index, style } = props;
     const projectAuthInfo = projectAuthInfoList[index]
@@ -319,6 +329,7 @@ function ProjectList() {
                     MenuListProps={{ "aria-labelledby": `${projectId}` }}>
 
                     <MenuItem onClick={() => editPermission(projectId)}>添加成员</MenuItem>
+                    <MenuItem onClick={() => editParam(projectId)}>配置参数</MenuItem>
                     <MenuItem onClick={() => handleOpenDelete(projectId)}>删除</MenuItem>
                   </Menu>
 
@@ -329,6 +340,8 @@ function ProjectList() {
 
           </Grid>
         </Box>
+
+        {paramDrawerState && <ProjectParam paramDrawerState={paramDrawerState} setParamDrawerState={setParamDrawerState} projectId={projectId}></ProjectParam>}
 
         <Dialog open={createProjectWindowFlag} onClose={handleClose}>
           <DialogTitle>新建项目</DialogTitle>
