@@ -8,7 +8,8 @@ import { errorNotice } from "../../../../core/utils/message"
 import NavigationUtil from "../../../../core/utils/navigationUtil"
 import { getToken, removeToken } from "../../../../core/utils/token"
 import { Divider, IconButton, ListItemIcon, Menu, MenuItem, SvgIcon } from "@mui/material"
-import { Logout, PersonAdd, Settings } from "@mui/icons-material"
+import { ConstructionOutlined, Logout, PersonAdd, Settings } from "@mui/icons-material"
+import EnvParam from "./EnvParam"
 
 function TopBar(props) {
 
@@ -42,6 +43,8 @@ function TopBar(props) {
     handleClose();
     NavigationUtil.goTo("/web/signIn");
   };
+
+  const [envParamFlag, setEnvParamFlag] = useState(false)
 
   return (
     <div className="topbar">
@@ -92,6 +95,12 @@ function TopBar(props) {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
 
+            <MenuItem onClick={()=>setEnvParamFlag(!envParamFlag)}>
+              <ListItemIcon>
+                <ConstructionOutlined fontSize="small"/>
+              </ListItemIcon>
+              环境配置
+            </MenuItem>
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>
                   <Logout fontSize="small"/>
@@ -102,6 +111,9 @@ function TopBar(props) {
 
         </div>
       </div>
+
+      {(getToken() && envParamFlag) &&
+        <EnvParam envParamFlag={envParamFlag} setEnvParamFlag={setEnvParamFlag}></EnvParam>}
     </div>
   )
 }
