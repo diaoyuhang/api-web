@@ -9,7 +9,7 @@ import NavigationUtil from "../utils/navigationUtil"
 function App(props) {
   const { getComponent, layoutSelectors, specActions, specSelectors,routerParams } = props
   const params = useParams()
-  const baseURL = 'http://localhost:3201';
+  const baseURL = 'http://localhost:8080';
 
   const navigate = useNavigate();
   useEffect(() => {
