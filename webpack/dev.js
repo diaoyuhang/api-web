@@ -54,7 +54,7 @@ const devConfig = configBuilder(
         "Access-Control-Allow-Methods": "*",
         "Access-Control-Allow-Headers": "*",
       },
-      port: 3201,
+      port: 3200,
       host: "0.0.0.0",
       hot: true,
       static: {
@@ -68,23 +68,23 @@ const devConfig = configBuilder(
       historyApiFallback: true,
       proxy: [{
         context:["/user"],
-        target: 'http://localhost:8080', // 将请求代理到的目标服务器
+        target: 'http://139.196.217.161:8080', // 将请求代理到的目标服务器
         changeOrigin: true, // 允许改变原始主机头为目标URL
       },{
         context:["/project"],
-        target: 'http://localhost:8080', // 将请求代理到的目标服务器
+        target: 'http://139.196.217.161:8080', // 将请求代理到的目标服务器
         changeOrigin: true, // 允许改变原始主机头为目标URL
       },{
         context:["/api"],
-        target: 'http://localhost:8080', // 将请求代理到的目标服务器
+        target: 'http://139.196.217.161:8080', // 将请求代理到的目标服务器
         changeOrigin: true, // 允许改变原始主机头为目标URL
       },{
         context:["/permission"],
-        target: 'http://localhost:8080', // 将请求代理到的目标服务器
+        target: 'http://139.196.217.161:8080', // 将请求代理到的目标服务器
         changeOrigin: true, // 允许改变原始主机头为目标URL
       },{
         context:["/test"],
-        target: 'http://localhost:8080', // 将请求代理到的目标服务器
+        target: 'http://139.196.217.161:8080', // 将请求代理到的目标服务器
         changeOrigin: true, // 允许改变原始主机头为目标URL
       }],
     },

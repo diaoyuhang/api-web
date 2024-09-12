@@ -14,8 +14,7 @@ import EnvParam from "./EnvParam"
 function TopBar(props) {
 
   const [name,setName] = useState("");
-  const [email,setEmail] = useState("");
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     if (getToken()) {
@@ -23,7 +22,6 @@ function TopBar(props) {
       request.get("/user/getUserInfo").then(r => {
         if (r.code === 200) {
           setName(r.data.name);
-          setEmail(r.data.email);
         } else {
           errorNotice(r.msg)
           NavigationUtil.goTo("/web/SignIn")
