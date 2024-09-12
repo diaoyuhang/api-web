@@ -3,7 +3,7 @@ import { getToken } from "./token"
 import { errorNotice } from "./message"
 
 const request = axios.create({
-  baseURL:"http://localhost:3201",
+  baseURL:"http://139.196.217.161:8080",
   timeout: 60*1000
 })
 
