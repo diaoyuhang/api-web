@@ -11,110 +11,126 @@ import { Divider, IconButton, ListItemIcon, Menu, MenuItem, SvgIcon } from "@mui
 import { ConstructionOutlined, Logout, PersonAdd, Settings } from "@mui/icons-material"
 import EnvParam from "./EnvParam"
 
-function TopBar(props) {
+class TopBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: "",
+      anchorEl: null,
+      envParamFlag: false,
+    };
+  }
 
-  const [name,setName] = useState("");
-  const [anchorEl, setAnchorEl] = useState(null);
+  // componentDidMount() {
+  //   if (getToken()) {
+  //     request.get("/user/getUserInfo").then(r => {
+  //       if (r.code === 200) {
+  //         this.setState({ name: r.data.name });
+  //       } else {
+  //         errorNotice(r.msg);
+  //         NavigationUtil.goTo("/web/SignIn");
+  //       }
+  //     });
+  //   }
+  // }
 
-  useEffect(() => {
-    if (getToken()) {
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  // }
 
-      request.get("/user/getUserInfo").then(r => {
-        if (r.code === 200) {
-          setName(r.data.name);
-        } else {
-          errorNotice(r.msg)
-          NavigationUtil.goTo("/web/SignIn")
-        }
-      })
-    }
-  }, []);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  handleClick = (event) => {
+    // this.setState({ anchorEl: event.currentTarget });
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const handleLogout = () => {
-    removeToken();
-    handleClose();
-    NavigationUtil.goTo("/web/signIn");
+
+  // handleClose = () => {
+  //   this.setState({ anchorEl: null });
+  // };
+  //
+  // handleLogout = () => {
+  //   removeToken();
+  //   this.handleClose();
+  //   NavigationUtil.goTo("/web/signIn");
+  // };
+  //
+  toggleEnvParamFlag = () => {
+    this.setState((prevState) => ({
+      envParamFlag: !prevState.envParamFlag
+    }));
   };
 
-  const [envParamFlag, setEnvParamFlag] = useState(false)
+  render() {
+    const { name, anchorEl, envParamFlag } = this.state;
+    const isMenuOpen = Boolean(anchorEl);
 
-  return (
-    <div className="topbar">
-      <div className="wrapper">
-        <div className="topbar-wrapper">
-          <Link>
+    return (
+      <div className="topbar">
+        <div className="wrapper">
+          <div className="topbar-wrapper">
             <Logo />
-          </Link>
-          {getToken() &&
-            <IconButton onClick={handleClick}>
-              <Avatar sx={{ bgcolor: deepOrange[500], float: "right" }}>{name.charAt(0)}</Avatar>
-            </IconButton>
-          }
 
-          <Menu
-            anchorEl={anchorEl}
-            id="account-menu"
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-            onClick={handleClose}
-            PaperProps={{
-              elevation: 0,
-              sx: {
-                overflow: 'visible',
-                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                mt: 1.5,
-                '& .MuiAvatar-root': {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
+{/*            {getToken() && (
+              <IconButton onClick={this.handleClick}>
+                <Avatar sx={{ bgcolor: deepOrange[500], float: "right" }}>
+                  {name.charAt(0)}
+                </Avatar>
+              </IconButton>
+            )}*/}
+            <button onClick={this.toggleEnvParamFlag}>点击</button>
+            {/*<Menu
+              anchorEl={anchorEl}
+              id="account-menu"
+              open={isMenuOpen}
+              onClose={this.handleClose}
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: 'visible',
+                  filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                  mt: 1.5,
+                  '& .MuiAvatar-root': {
+                    width: 32,
+                    height: 32,
+                    ml: -0.5,
+                    mr: 1,
+                  },
+                  '&::before': {
+                    content: '""',
+                    display: 'block',
+                    position: 'absolute',
+                    top: 0,
+                    right: 14,
+                    width: 10,
+                    height: 10,
+                    bgcolor: 'background.paper',
+                    transform: 'translateY(-50%) rotate(45deg)',
+                    zIndex: 0,
+                  },
                 },
-                '&::before': {
-                  content: '""',
-                  display: 'block',
-                  position: 'absolute',
-                  top: 0,
-                  right: 14,
-                  width: 10,
-                  height: 10,
-                  bgcolor: 'background.paper',
-                  transform: 'translateY(-50%) rotate(45deg)',
-                  zIndex: 0,
-                },
-              },
-            }}
-            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          >
-
-            <MenuItem onClick={()=>setEnvParamFlag(!envParamFlag)}>
-              <ListItemIcon>
-                <ConstructionOutlined fontSize="small"/>
-              </ListItemIcon>
-              环境配置
-            </MenuItem>
-            <MenuItem onClick={handleLogout}>
-              <ListItemIcon>
-                  <Logout fontSize="small"/>
-              </ListItemIcon>
-              登出
-            </MenuItem>
-          </Menu>
-
+              }}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            >
+              <MenuItem onClick={this.toggleEnvParamFlag}>
+                <ListItemIcon>
+                  <ConstructionOutlined fontSize="small" />
+                </ListItemIcon>
+                环境配置
+              </MenuItem>
+              <MenuItem onClick={this.handleLogout}>
+                <ListItemIcon>
+                  <Logout fontSize="small" />
+                </ListItemIcon>
+                登出
+              </MenuItem>
+            </Menu>*/}
+          </div>
         </div>
-      </div>
 
-      {(getToken() && envParamFlag) &&
-        <EnvParam envParamFlag={envParamFlag} setEnvParamFlag={setEnvParamFlag}></EnvParam>}
-    </div>
-  )
+        {getToken() && envParamFlag && (
+          <EnvParam envParamFlag={envParamFlag} setEnvParamFlag={this.toggleEnvParamFlag} />
+        )}
+      </div>
+    );
+  }
 }
 
-
-export default TopBar
+export default TopBar;

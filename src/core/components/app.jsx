@@ -1,35 +1,22 @@
 /**
  * @prettier
  */
-import React, { useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import React from "react"
 import withRouterParams from "../utils/withRouterParams"
 import NavigationUtil from "../utils/navigationUtil"
+import PropTypes from "prop-types"
 
-function App(props) {
-  const { getComponent, layoutSelectors, specActions, specSelectors,routerParams } = props
-  const params = useParams()
-  // const baseURL = 'http://localhost:3200';
-  const baseURL = 'http://139.196.217.161:8080';
+class App extends React.Component {
 
-  const navigate = useNavigate();
-  useEffect(() => {
-    NavigationUtil.setNavigate(navigate);
-  }, [navigate]);
+  constructor(props) {
+    super(props)
+    this.baseURL = "http://localhost:8080"
+    // this.baseURL = "http://localhost:3200"
+    // this.baseURL = 'http://139.196.217.161:8080';
+  }
 
-  useEffect(() => {
-    let url = '';
-    if (routerParams.projectId){
-      url = baseURL + "/api/getBasicApiInfoList?projectId=" + encodeURIComponent(routerParams.projectId);
-    }else if(routerParams.apiId){
-      url = baseURL+"/api/apiMetaDateInfo?apiId="+encodeURIComponent(routerParams.apiId);
-    }else if(routerParams.historyId){
-      url = baseURL+"/api/historyApiMetaDateInfo?historyId="+encodeURIComponent(routerParams.historyId);
-    }
-    specActions.download(url);
-  }, [])
-
-  const getLayout = () => {
+  getLayout() {
+    const { getComponent, layoutSelectors } = this.props
     const layoutName = layoutSelectors.current()
     const Component = getComponent(layoutName, true)
 
@@ -38,8 +25,32 @@ function App(props) {
       : () => <h1> No layout defined for &quot;{layoutName}&quot; </h1>
   }
 
-  const Layout = getLayout()
-  return <Layout />
+  componentDidMount() {
+    const { routerParams, specActions,navigate } = this.props
+
+    // 设置导航
+    NavigationUtil.setNavigate(navigate)
+
+    let url = ""
+    if (routerParams.projectId) {
+      url = this.baseURL + "/api/getBasicApiInfoList?projectId=" + encodeURIComponent(routerParams.projectId)
+    } else if (routerParams.apiId) {
+      url = this.baseURL + "/api/apiMetaDateInfo?apiId=" + encodeURIComponent(routerParams.apiId)
+    } else if (routerParams.historyId) {
+      url = this.baseURL + "/api/historyApiMetaDateInfo?historyId=" + encodeURIComponent(routerParams.historyId)
+    }
+    specActions.download(url)
+  }
+  render() {
+
+    const Layout = this.getLayout()
+    return <Layout />
+  }
 }
 
-export default withRouterParams(App);
+
+App.propTypes = {
+  getComponent: PropTypes.func.isRequired,
+  layoutSelectors: PropTypes.object.isRequired,
+}
+export default withRouterParams(App)
