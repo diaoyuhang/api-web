@@ -11,18 +11,26 @@ import { errorNotice } from "../../utils/message"
 import moment from "moment"
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined"
 
-export default function BaseLayout(props) {
-/*  static propTypes = {
+class BaseLayout extends React.Component {
+  static propTypes = {
     errSelectors: PropTypes.object.isRequired,
     errActions: PropTypes.object.isRequired,
     specSelectors: PropTypes.object.isRequired,
     oas3Selectors: PropTypes.object.isRequired,
     oas3Actions: PropTypes.object.isRequired,
     getComponent: PropTypes.func.isRequired,
-  }*/
+  }
 
-  // render() {
-    const { errSelectors, specSelectors, getComponent } = props
+  constructor(props,context) {
+    super(props,context);
+    this.state = {
+      drawerState: false,
+      historyData: []
+    };
+  }
+
+  render() {
+    const { errSelectors, specSelectors, getComponent } = this.props
 
     const SvgAssets = getComponent("SvgAssets")
     const InfoContainer = getComponent("InfoContainer", true)
@@ -47,22 +55,20 @@ export default function BaseLayout(props) {
     const loadingStatus = specSelectors.loadingStatus()
 
     let loadingMessage = null
-    const [drawerState, setDrawerState] = useState(false)
-    const [historyData, setHistoryData] = useState([])
-
+    const { drawerState, historyData,  } = this.state;
     const checkUpdateHistory = (apiId) => {
       request.get("/api/getApiHistoryInfo?apiId=" + apiId).then(res => {
         if (res.code === 200) {
-          setHistoryData(res.data)
-          setDrawerState(true)
+          this.setState({ historyData: res.data });
+          this.setState({ drawerState: true });
         } else {
           errorNotice(res.msg)
         }
       })
     }
     const closeDrawer = () => {
-      setDrawerState(false)
-      setHistoryData([])
+      this.setState({ drawerState: false });
+      this.setState({ historyData: res.data });
     }
     function renderRow(props) {
       const { index, style } = props;
@@ -221,5 +227,6 @@ export default function BaseLayout(props) {
         </Drawer>
       </div>
     )
-  // }
+  }
 }
+export default BaseLayout;

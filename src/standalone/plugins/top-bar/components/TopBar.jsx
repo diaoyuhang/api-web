@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react"
-import Avatar from "@mui/material/Avatar"
-import { Link } from "../../../../core/components/layout-utils"
+import React from "react"
 import Logo from "./Logo"
+import { getToken, removeToken } from "../../../../core/utils/token"
+import EnvParam from "./EnvParam"
 import { deepOrange } from "@mui/material/colors"
-import { request } from "../../../../core/utils/request"
+import { IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material"
+import Avatar from "@mui/material/Avatar"
+import { ConstructionOutlined, Logout } from "@mui/icons-material"
 import { errorNotice } from "../../../../core/utils/message"
 import NavigationUtil from "../../../../core/utils/navigationUtil"
-import { getToken, removeToken } from "../../../../core/utils/token"
-import { Divider, IconButton, ListItemIcon, Menu, MenuItem, SvgIcon } from "@mui/material"
-import { ConstructionOutlined, Logout, PersonAdd, Settings } from "@mui/icons-material"
-import EnvParam from "./EnvParam"
+import { request } from "../../../../core/utils/request"
 
 class TopBar extends React.Component {
-  constructor(props) {
-    super(props);
+
+  static propTypes = {
+    layoutActions: PropTypes.object.isRequired,
+    authActions: PropTypes.object.isRequired
+  }
+
+  constructor(props,context) {
+    super(props,context);
     this.state = {
       name: "",
       anchorEl: null,
@@ -21,36 +26,36 @@ class TopBar extends React.Component {
     };
   }
 
-  // componentDidMount() {
-  //   if (getToken()) {
-  //     request.get("/user/getUserInfo").then(r => {
-  //       if (r.code === 200) {
-  //         this.setState({ name: r.data.name });
-  //       } else {
-  //         errorNotice(r.msg);
-  //         NavigationUtil.goTo("/web/SignIn");
-  //       }
-  //     });
-  //   }
-  // }
+  componentDidMount() {
+    if (getToken()) {
+      request.get("/user/getUserInfo").then(r => {
+        if (r.code === 200) {
+          this.setState({ name: r.data.name });
+        } else {
+          errorNotice(r.msg);
+          NavigationUtil.goTo("/web/SignIn");
+        }
+      });
+    }
+  }
 
-  // UNSAFE_componentWillReceiveProps(nextProps) {
-  // }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+  }
 
   handleClick = (event) => {
-    // this.setState({ anchorEl: event.currentTarget });
+    this.setState({ anchorEl: event.currentTarget });
   };
 
-  // handleClose = () => {
-  //   this.setState({ anchorEl: null });
-  // };
-  //
-  // handleLogout = () => {
-  //   removeToken();
-  //   this.handleClose();
-  //   NavigationUtil.goTo("/web/signIn");
-  // };
-  //
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
+  handleLogout = () => {
+    removeToken();
+    this.handleClose();
+    NavigationUtil.goTo("/web/signIn");
+  };
+
   toggleEnvParamFlag = () => {
     this.setState((prevState) => ({
       envParamFlag: !prevState.envParamFlag
@@ -67,15 +72,14 @@ class TopBar extends React.Component {
           <div className="topbar-wrapper">
             <Logo />
 
-{/*            {getToken() && (
+            {getToken() && (
               <IconButton onClick={this.handleClick}>
                 <Avatar sx={{ bgcolor: deepOrange[500], float: "right" }}>
                   {name.charAt(0)}
                 </Avatar>
               </IconButton>
-            )}*/}
-            <button onClick={this.toggleEnvParamFlag}>点击</button>
-            {/*<Menu
+            )}
+            <Menu
               anchorEl={anchorEl}
               id="account-menu"
               open={isMenuOpen}
@@ -121,7 +125,7 @@ class TopBar extends React.Component {
                 </ListItemIcon>
                 登出
               </MenuItem>
-            </Menu>*/}
+            </Menu>
           </div>
         </div>
 

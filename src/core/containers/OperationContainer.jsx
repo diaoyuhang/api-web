@@ -95,14 +95,21 @@ class OperationContainer extends PureComponent {
     }
 
   }
+  componentDidUpdate(prevProps) {
+    // 这里可以访问上一次的 props
+    if (this.props.response !== prevProps.response) {
+      console.log("Props have changed!");
+    }
+  }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const { response, isShown } = nextProps
+    const { response, isShown ,routerParams} = nextProps
     const resolvedSubtree = this.getResolvedSubtree()
 
     if(response !== this.props.response) {
       this.setState({ executeInProgress: false })
     }
+
 
     if(isShown && resolvedSubtree === undefined) {
       this.requestResolvedSubtree()

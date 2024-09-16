@@ -7,18 +7,11 @@ import withRouterParams from "../utils/withRouterParams"
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined"
 import Link from "@mui/material/Link"
 import HistoryIcon from '@mui/icons-material/History';
-import { Drawer, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from "@mui/material"
-import { request } from "../utils/request"
-import Box from "@mui/material/Box"
-import { FixedSizeList } from "react-window"
-import { errorNotice } from "../utils/message"
-import moment from "moment/moment"
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 
 
-function OperationSummary (props) {
+class OperationSummary extends PureComponent {
 
-/*  static propTypes = {
+  static propTypes = {
     specPath: ImPropTypes.list.isRequired,
     operationProps: PropTypes.instanceOf(Iterable).isRequired,
     isShown: PropTypes.bool.isRequired,
@@ -33,9 +26,9 @@ function OperationSummary (props) {
     operationProps: null,
     specPath: List(),
     summary: ""
-  }*/
+  }
 
-  // render() {
+  render() {
 
     let {
       isShown,
@@ -47,7 +40,7 @@ function OperationSummary (props) {
       specPath,
       routerParams,
       checkUpdateHistory
-    } = props
+    } = this.props
 
     let {
       summary,
@@ -139,6 +132,6 @@ function OperationSummary (props) {
         </button>
       </div>
     )
-  // }
+  }
 }
 export default withRouterParams(OperationSummary);
