@@ -3,9 +3,9 @@ import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import { opId } from "swagger-client/es/helpers"
 import { Iterable, fromJS, Map } from "immutable"
-import withRouterParams from "../utils/withRouterParams"
+import getRouterParams from "../utils/routerParamUtil"
 
-class OperationContainer extends PureComponent {
+export default  class OperationContainer extends PureComponent {
   constructor(props, context) {
     super(props, context)
 
@@ -83,7 +83,8 @@ class OperationContainer extends PureComponent {
   }
 
   componentDidMount() {
-    const { isShown,routerParams } = this.props
+    const { isShown } = this.props
+    const routerParams = getRouterParams();
     const resolvedSubtree = this.getResolvedSubtree()
 
     if(isShown && resolvedSubtree === undefined) {
@@ -103,7 +104,7 @@ class OperationContainer extends PureComponent {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const { response, isShown ,routerParams} = nextProps
+    const { response, isShown } = nextProps
     const resolvedSubtree = this.getResolvedSubtree()
 
     if(response !== this.props.response) {
@@ -127,7 +128,8 @@ class OperationContainer extends PureComponent {
   }*/
 
   toggleShown =(url) => {
-    if (this.props.routerParams.projectId) {
+    const routerParams = getRouterParams();
+    if (routerParams.projectId) {
       window.open(url, "_blank")
     }
   }
@@ -209,7 +211,6 @@ class OperationContainer extends PureComponent {
       oas3Actions,
       oas3Selectors,
       fn,
-      routerParams,
       checkUpdateHistory
     } = this.props
 
@@ -270,4 +271,3 @@ class OperationContainer extends PureComponent {
     )
   }
 }
-export default withRouterParams(OperationContainer);

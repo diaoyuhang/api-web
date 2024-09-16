@@ -5,11 +5,11 @@ import { getExtensions, sanitizeUrl, escapeDeepLinkPath } from "core/utils"
 import { safeBuildUrl } from "core/utils/url"
 import { Iterable, List } from "immutable"
 import ImPropTypes from "react-immutable-proptypes"
-import withRouterParams from "../utils/withRouterParams"
 
 import RollingLoadSVG from "core/assets/rolling-load.svg"
+import getRouterParams from "../utils/routerParamUtil"
 
- class Operation extends PureComponent {
+export default class Operation extends PureComponent {
   static propTypes = {
     specPath: ImPropTypes.list.isRequired,
     operation: PropTypes.instanceOf(Iterable).isRequired,
@@ -63,10 +63,10 @@ import RollingLoadSVG from "core/assets/rolling-load.svg"
       authSelectors,
       oas3Actions,
       oas3Selectors,
-      routerParams,
       checkUpdateHistory
     } = this.props
     let operationProps = this.props.operation
+    let routerParams = getRouterParams();
 
     let {
       deprecated,
@@ -261,5 +261,3 @@ import RollingLoadSVG from "core/assets/rolling-load.svg"
   }
 
 }
-
-export default withRouterParams(Operation);

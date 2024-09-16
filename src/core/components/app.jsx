@@ -2,16 +2,15 @@
  * @prettier
  */
 import React from "react"
-import withRouterParams from "../utils/withRouterParams"
-import NavigationUtil from "../utils/navigationUtil"
 import PropTypes from "prop-types"
+import getRouterParams from "../utils/routerParamUtil"
 
-class App extends React.Component {
+export default  class App extends React.Component {
 
   constructor(props) {
     super(props)
-    this.baseURL = "http://localhost:8080"
-    // this.baseURL = "http://localhost:3200"
+    // this.baseURL = "http://localhost:8080"
+    this.baseURL = "http://localhost:3200"
     // this.baseURL = 'http://139.196.217.161:8080';
   }
 
@@ -26,10 +25,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const { routerParams, specActions,navigate } = this.props
-
+    const {  specActions } = this.props
     // 设置导航
-    NavigationUtil.setNavigate(navigate)
+    const routerParams = getRouterParams()
+    console.log("app routerParam",routerParams);
 
     let url = ""
     if (routerParams.projectId) {
@@ -44,7 +43,7 @@ class App extends React.Component {
   render() {
 
     const Layout = this.getLayout()
-    return <Layout />
+    return <Layout/>
   }
 }
 
@@ -53,4 +52,3 @@ App.propTypes = {
   getComponent: PropTypes.func.isRequired,
   layoutSelectors: PropTypes.object.isRequired,
 }
-export default withRouterParams(App)

@@ -3,13 +3,13 @@ import PropTypes from "prop-types"
 import { Iterable, List } from "immutable"
 import ImPropTypes from "react-immutable-proptypes"
 import toString from "lodash/toString"
-import withRouterParams from "../utils/withRouterParams"
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined"
 import Link from "@mui/material/Link"
 import HistoryIcon from '@mui/icons-material/History';
+import getRouterParams from "../utils/routerParamUtil"
 
 
-class OperationSummary extends PureComponent {
+export default class OperationSummary extends PureComponent {
 
   static propTypes = {
     specPath: ImPropTypes.list.isRequired,
@@ -38,7 +38,6 @@ class OperationSummary extends PureComponent {
       authSelectors,
       operationProps,
       specPath,
-      routerParams,
       checkUpdateHistory
     } = this.props
 
@@ -57,7 +56,7 @@ class OperationSummary extends PureComponent {
     let {
       summary: resolvedSummary,
     } = op
-
+    let routerParams = getRouterParams();
     let security = operationProps.get("security")
 
     const AuthorizeOperationBtn = getComponent("authorizeOperationBtn", true)
@@ -134,4 +133,3 @@ class OperationSummary extends PureComponent {
     )
   }
 }
-export default withRouterParams(OperationSummary);
