@@ -12,17 +12,10 @@ import { request } from "../../../../core/utils/request"
 
 class TopBar extends React.Component {
 
-  static propTypes = {
-    layoutActions: PropTypes.object.isRequired,
-    authActions: PropTypes.object.isRequired
-  }
-
   constructor(props,context) {
     super(props,context);
     this.state = {
       name: "",
-      anchorEl: null,
-      envParamFlag: false,
     };
   }
 
@@ -42,29 +35,13 @@ class TopBar extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
 
-  handleClick = (event) => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  handleClose = () => {
-    this.setState({ anchorEl: null });
-  };
 
   handleLogout = () => {
     removeToken();
-    this.handleClose();
-    NavigationUtil.goTo("/web/signIn");
+    window.location.href = "/web/signIn";
   };
-
-  toggleEnvParamFlag = () => {
-    this.setState((prevState) => ({
-      envParamFlag: !prevState.envParamFlag
-    }));
-  };
-
   render() {
-    const { name, anchorEl, envParamFlag } = this.state;
-    const isMenuOpen = Boolean(anchorEl);
+    const { name } = this.state;
 
     return (
       <div className="topbar">
@@ -72,66 +49,11 @@ class TopBar extends React.Component {
           <div className="topbar-wrapper">
             <Logo />
 
-            {getToken() && (
-              <IconButton onClick={this.handleClick}>
-                <Avatar sx={{ bgcolor: deepOrange[500], float: "right" }}>
-                  {name.charAt(0)}
-                </Avatar>
-              </IconButton>
-            )}
-            <Menu
-              anchorEl={anchorEl}
-              id="account-menu"
-              open={isMenuOpen}
-              onClose={this.handleClose}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  overflow: 'visible',
-                  filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                  mt: 1.5,
-                  '& .MuiAvatar-root': {
-                    width: 32,
-                    height: 32,
-                    ml: -0.5,
-                    mr: 1,
-                  },
-                  '&::before': {
-                    content: '""',
-                    display: 'block',
-                    position: 'absolute',
-                    top: 0,
-                    right: 14,
-                    width: 10,
-                    height: 10,
-                    bgcolor: 'background.paper',
-                    transform: 'translateY(-50%) rotate(45deg)',
-                    zIndex: 0,
-                  },
-                },
-              }}
-              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            >
-              <MenuItem onClick={this.toggleEnvParamFlag}>
-                <ListItemIcon>
-                  <ConstructionOutlined fontSize="small" />
-                </ListItemIcon>
-                环境配置
-              </MenuItem>
-              <MenuItem onClick={this.handleLogout}>
-                <ListItemIcon>
-                  <Logout fontSize="small" />
-                </ListItemIcon>
-                登出
-              </MenuItem>
-            </Menu>
+            {getToken() ?
+              <span style={{fontSize:13,color:'#fff'}}>{name}<a style={{color:'#097eb2',cursor:"pointer"}} onClick={this.handleLogout}>登出</a></span>
+              : <span><a style={{color:'#097eb2',cursor:"pointer"}} onClick={()=> window.location.href = "/web/signIn"}>登录</a></span>}
           </div>
         </div>
-
-        {getToken() && envParamFlag && (
-          <EnvParam envParamFlag={envParamFlag} setEnvParamFlag={this.toggleEnvParamFlag} />
-        )}
       </div>
     );
   }
