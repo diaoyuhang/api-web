@@ -3,8 +3,8 @@ import { getToken } from "./token"
 import { errorNotice } from "./message"
 
 const request = axios.create({
-  baseURL:"http://localhost:8080",
-  // baseURL:"http://localhost:3200",
+  // baseURL:"http://localhost:8080",
+  baseURL:"http://localhost:3200",
   // baseURL:"http://139.196.217.161:8080",
   timeout: 60*1000
 })
@@ -12,7 +12,7 @@ const request = axios.create({
 request.interceptors.request.use((config)=>{
   const token = getToken()
   if (token){
-    config.headers.token = token;
+    config.headers.token = token ? token:"";
   }
   return config;
 },(error)=>{

@@ -26,7 +26,7 @@ export default function downloadUrlPlugin(toolbox) {
           credentials: "same-origin",
           headers: {
             Accept: "application/json,*/*",
-            token: getToken()
+            token: getToken() ? getToken() : "",
           },
         }).then(next, next)
 

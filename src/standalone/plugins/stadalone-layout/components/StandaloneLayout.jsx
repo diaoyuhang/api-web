@@ -24,7 +24,7 @@ class StandaloneLayout extends React.Component {
 
     return (
       <Container className='swagger-ui'>
-        {/*{Topbar ? <Topbar /> : null}*/}
+        {Topbar ? <Topbar /> : null}
         <BaseLayout />
 
       </Container>

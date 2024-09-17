@@ -28,7 +28,6 @@ export default  class App extends React.Component {
     const {  specActions } = this.props
     // 设置导航
     const routerParams = getRouterParams()
-    console.log("app routerParam",routerParams);
 
     let url = ""
     if (routerParams.projectId) {

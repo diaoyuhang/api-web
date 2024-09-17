@@ -38,6 +38,8 @@ import NavigationUtil from "../../utils/navigationUtil"
 import { FixedSizeList } from "react-window"
 import AddIcon from '@mui/icons-material/Add'
 import ProjectParam from "./ProjectParam"
+import { getToken } from "../../utils/token"
+import EnvParam from "../../../standalone/plugins/top-bar/components/EnvParam"
 
 
 function ProjectList() {
@@ -48,6 +50,7 @@ function ProjectList() {
     name:"",
     description:""
   })
+  const [envParamFlag, setEnvParamFlag] = useState(false)
 
   const [errors, setErrors] = useState({
     name: '',
@@ -255,7 +258,7 @@ function ProjectList() {
   function renderRow(props) {
     const { index, style } = props;
     const projectAuthInfo = projectAuthInfoList[index]
-    const emailReadOnly = projectAuthInfo.email?true:false;
+    const emailReadOnly = !!projectAuthInfo.email;
     return (
 
       <ListItem style={style} key={index} component="div">
@@ -290,7 +293,8 @@ function ProjectList() {
       <Container component="main" maxWidth="lg" sx={{marginTop:4}}>
         <CssBaseline />
 
-        <Button variant="outlined" onClick={handleClickOpen}>新建项目</Button>
+        <Button variant="outlined" onClick={handleClickOpen} style={{ marginLeft: 5, marginRight: 5 }}>新建项目</Button>
+        <Button variant="outlined" onClick={()=>setEnvParamFlag(!envParamFlag)} style={{ marginLeft: 5, marginRight: 5 }}>环境配置</Button>
 
         <Box sx={{ flexGrow: 1, marginTop: 8 }}>
 
@@ -425,6 +429,10 @@ function ProjectList() {
         </Drawer>
 
       </Container>
+
+      {getToken() && envParamFlag && (
+        <EnvParam envParamFlag={envParamFlag} setEnvParamFlag={()=>setEnvParamFlag(!envParamFlag)} />
+      )}
     </LayoutContainer>
   )
 }

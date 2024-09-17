@@ -10,7 +10,6 @@ import { request } from "../../utils/request"
 import { errorNotice } from "../../utils/message"
 import moment from "moment"
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined"
-import getRouterParams from "../../utils/routerParamUtil"
 
 class BaseLayout extends React.Component {
   static propTypes = {
@@ -32,8 +31,6 @@ class BaseLayout extends React.Component {
 
   render() {
     const { errSelectors, specSelectors, getComponent } = this.props
-    const routerParams = getRouterParams()
-    console.log("base routerParam",routerParams);
     const SvgAssets = getComponent("SvgAssets")
     const InfoContainer = getComponent("InfoContainer", true)
     const VersionPragmaFilter = getComponent("VersionPragmaFilter")

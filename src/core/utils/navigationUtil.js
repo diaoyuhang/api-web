@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom"
+
 class NavigationUtil {
   navigate;
 
