@@ -44,7 +44,7 @@ export default function SignIn() {
       if (validator.isEmpty(value)){
         msg = "邮箱不能为空";
       }else if (!value.endsWith("@digiwin.com")){
-        msg = "邮箱以@digiwincloud.com结尾";
+        msg = "邮箱以@digiwin.com结尾";
       }
       setErrors({...errors,[name]:msg});
     }
