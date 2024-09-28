@@ -1,11 +1,10 @@
 import axios from "axios"
 import { getToken } from "./token"
 import { errorNotice } from "./message"
+import baseUrl from "./baseUrl"
 
 const request = axios.create({
-  // baseURL:"http://localhost:8080",
-  // baseURL:"http://localhost:3200",
-  baseURL:"http://139.196.217.161:8080",
+  baseURL:baseUrl.apiUrl,
   timeout: 60*1000
 })
 

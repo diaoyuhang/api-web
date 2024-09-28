@@ -7,6 +7,9 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined"
 import Link from "@mui/material/Link"
 import HistoryIcon from '@mui/icons-material/History';
 import getRouterParams from "../utils/routerParamUtil"
+import { FileDownloadOutlined } from "@mui/icons-material"
+import { request } from "../utils/request"
+import baseUrl from "../utils/baseUrl"
 
 
 export default class OperationSummary extends PureComponent {
@@ -71,6 +74,23 @@ export default class OperationSummary extends PureComponent {
     const securityIsOptional = hasSecurity && security.size === 1 && security.first().isEmpty()
     const allowAnonymous = !hasSecurity || securityIsOptional
 
+    const downloadFile=(url)=>{
+      request.get(url)
+        .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        // 为下载文件设置文件名
+        link.setAttribute('download', 'api.json'); // 替换为实际的文件名
+        // 添加并自动点击该链接
+        document.body.appendChild(link);
+        link.click();
+
+        // 移除该链接
+        link.remove();
+      })
+    }
+
     return (
       <div className={`opblock-summary opblock-summary-${method}`} >
         <button
@@ -117,6 +137,15 @@ export default class OperationSummary extends PureComponent {
                 onClick={() => checkUpdateHistory(encodeURIComponent(operationProps.get("operationId") || routerParams.apiId))}
                 color="inherit" sx={{ "&:hover": { backgroundColor: "#c1c3c7", borderRadius: 1 } }}>
             <HistoryIcon />
+          </Link>
+        )}
+        {(
+          <Link href="#" underline="hover"
+                onClick={() => {
+                  window.location.href = baseUrl.apiUrl + "/file/downloadOpenApiJSON?apiId=" + encodeURIComponent(operationProps.get("operationId") || routerParams.apiId)
+                }}
+                color="inherit" sx={{ "&:hover": { backgroundColor: "#c1c3c7", borderRadius: 1 } }}>
+            <FileDownloadOutlined />
           </Link>
         )}
 

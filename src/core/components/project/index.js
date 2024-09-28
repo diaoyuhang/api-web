@@ -40,6 +40,7 @@ import AddIcon from '@mui/icons-material/Add'
 import ProjectParam from "./ProjectParam"
 import { getToken } from "../../utils/token"
 import EnvParam from "../../../standalone/plugins/top-bar/components/EnvParam"
+import baseUrl from "../../utils/baseUrl"
 
 
 function ProjectList() {
@@ -286,6 +287,10 @@ function ProjectList() {
     );
   }
 
+  const downloadFile=(url)=>{
+    window.location.href = baseUrl.apiUrl+url;
+  }
+
   return (
     <LayoutContainer className='swagger-ui'>
       <TopBar/>
@@ -295,6 +300,8 @@ function ProjectList() {
 
         <Button variant="outlined" onClick={handleClickOpen} style={{ marginLeft: 5, marginRight: 5 }}>新建项目</Button>
         <Button variant="outlined" onClick={()=>setEnvParamFlag(!envParamFlag)} style={{ marginLeft: 5, marginRight: 5 }}>环境配置</Button>
+        <Button variant="outlined" onClick={()=>{window.location.href = baseUrl.apiUrl+"/file/downloadHelpMd"}}
+                style={{ marginLeft: 5, marginRight: 5 }}>帮助文档</Button>
 
         <Box sx={{ flexGrow: 1, marginTop: 8 }}>
 

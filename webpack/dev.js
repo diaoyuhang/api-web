@@ -86,6 +86,10 @@ const devConfig = configBuilder(
         context:["/test"],
         target: 'http://139.196.217.161:8080', // 将请求代理到的目标服务器
         changeOrigin: true, // 允许改变原始主机头为目标URL
+      },{
+        context:["/file"],
+        target: 'http://139.196.217.161:8080', // 将请求代理到的目标服务器
+        changeOrigin: true, // 允许改变原始主机头为目标URL
       }],
     },
 

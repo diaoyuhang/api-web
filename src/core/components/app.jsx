@@ -4,14 +4,13 @@
 import React from "react"
 import PropTypes from "prop-types"
 import getRouterParams from "../utils/routerParamUtil"
+import baseUrl from "../utils/baseUrl"
 
 export default  class App extends React.Component {
 
   constructor(props) {
     super(props)
-    // this.baseURL = "http://localhost:8080"
-    // this.baseURL = "http://localhost:3200"
-    this.baseURL = 'http://139.196.217.161:8080';
+    this.baseURL = baseUrl.apiUrl
   }
 
   getLayout() {
